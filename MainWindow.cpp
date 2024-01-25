@@ -10,12 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     ui->toolsList->setViewMode(QListWidget::IconMode);
-    ui->toolsList->setIconSize(QSize(100, 100));
+    ui->toolsList->setIconSize(QSize(50, 50));
     ui->toolsList->setResizeMode(QListWidget::Adjust);
 
-    ui->toolsList->addItem(new QListWidgetItem(QIcon(QFileInfo(QDir("../"), "arm.png").absolutePath()), "elem1"));
-    ui->toolsList->addItem(new QListWidgetItem(QIcon("arm.png"), "elem1"));
-    ui->toolsList->addItem(new QListWidgetItem(QIcon("../arm.png"), "elem1"));
+    ui->toolsList->addItem(new QListWidgetItem(QIcon(":/resources/toolsimages/arm.png"), "elem1"));
+    ui->toolsList->addItem(new QListWidgetItem(QIcon(":/resources/toolsimages/arm.png"), "elem2"));
+    ui->toolsList->addItem(new QListWidgetItem(QIcon(":/resources/toolsimages/arm.png"), "elem3"));
 
 }
 

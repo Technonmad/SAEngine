@@ -17,6 +17,7 @@ set(PROJECT_SOURCES
         MainWindow.cpp
         MainWindow.h
         MainWindow.ui
+        ToolsImages.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
