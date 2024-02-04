@@ -7,9 +7,8 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_standard_project_setup()
 
 add_subdirectory(src/main)
+add_subdirectory(src/libs)
 add_subdirectory(src/ui)
-add_subdirectory(entities/tools/)
-add_subdirectory(entities/agents/)
 
 qt_add_resources(SAEngine "tools_images"
         PREFIX "/"
