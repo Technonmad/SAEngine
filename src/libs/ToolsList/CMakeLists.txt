@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.5)
 find_package(Qt6Widgets)
 include_directories(${Qt6Widgets_INCLUDE_DIRS})
 
-set(ToolsIcon
-    ToolsIcon.cpp
-    ToolsIcon.h
+set(ToolsList
+    ToolsList.cpp
+    ToolsList.h
 )
 
-add_library(ToolsIconLib STATIC ${ToolsIcon})
+add_library(ToolsListLib STATIC ${ToolsList})

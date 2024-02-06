@@ -4,4 +4,4 @@ project(${PROJECT_NAME})
 
 add_subdirectory(ModelWindow)
 add_subdirectory(ModellingTools)
-add_subdirectory(ToolsIcon)
+add_subdirectory(ToolsList)
