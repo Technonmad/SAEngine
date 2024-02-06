@@ -2,11 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QListWidget>
+#include <QListView>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+class ToolsList;
 
 class MainWindow : public QMainWindow
 {
@@ -18,7 +20,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QTabWidget tab_tools;
-    QListWidget list_tools;
+    void setupWidgets();
+    QListView *toolsList;
+    ToolsList *toolModel;
 };
 #endif // MAINWINDOW_H

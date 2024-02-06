@@ -1,26 +1,46 @@
 #include "MainWindow.h"
 #include "./ui_MainWindow.h"
-#include <QDir>
-#include <QFileInfo>
+#include "ToolsList.h"
+
+#include<QtWidgets>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setupWidgets();
+    /*ui->toolsList->setIconSize(QSize(50, 50));
 
-    ui->toolsList->setViewMode(QListWidget::IconMode);
-    ui->toolsList->setIconSize(QSize(50, 50));
-    ui->toolsList->setResizeMode(QListWidget::Adjust);
-
-    ui->toolsList->addItem(new QListWidgetItem(QIcon(":/images/tools/arm.png"), "elem1"));
-    ui->toolsList->addItem(new QListWidgetItem(QIcon(":/images/tools/arm.png"), "elem2"));
-    ui->toolsList->addItem(new QListWidgetItem(QIcon(":/images/tools/arm.png"), "elem3"));
+    ui->toolsList->addTool(QPixmap(":/images/tools/arm.png"));
+    ui->toolsList->addTool(QPixmap(":/images/tools/arm.png"));
+    ui->toolsList->addTool(QPixmap(":/images/tools/arm.png")); */
 
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::setupWidgets()
+{
+    QFrame *frame = new QFrame;
+    QVBoxLayout *frameLayout = new QVBoxLayout(frame);
+
+    toolsList = new QListView;
+    toolsList->setDragEnabled(true);
+    toolsList->setViewMode(QListView::IconMode);
+    toolsList->setIconSize(QSize(50, 50));
+    toolsList->setGridSize(QSize(70, 70));
+    toolsList->setSpacing(10);
+    toolsList->setMovement(QListView::Snap);
+
+    ToolsList *toolsModel = new ToolsList(this);
+    toolsList->setModel(toolsModel);
+
+    frameLayout->addWidget(toolsList);
+    setCentralWidget(frame);
+
 }
 
