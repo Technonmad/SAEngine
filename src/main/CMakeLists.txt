@@ -19,15 +19,11 @@ set(SAEngine_SRC
 
 qt_add_executable(SAEngine ${SAEngine_SRC})
 
-target_include_directories(SAEngine PUBLIC
-        ../models/toolsBoxItem
-)
-
 # Use the Widgets module from Qt 5
 target_link_libraries(
     SAEngine PUBLIC
     Qt::Core
     Qt::Gui
     Qt6::Widgets
-    toolsBoxItem
+    ToolsBoxModel
 )
