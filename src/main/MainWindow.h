@@ -22,6 +22,5 @@ private:
     Ui::MainWindow *ui;
     void setupWidgets();
     QListView *toolsList;
-    ToolsList *toolModel;
 };
 #endif // MAINWINDOW_H

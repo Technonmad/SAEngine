@@ -1,6 +1,5 @@
 #include "MainWindow.h"
 #include "./ui_MainWindow.h"
-#include "ToolsList.h"
 
 #include<QtWidgets>
 
@@ -25,22 +24,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupWidgets()
 {
-    QFrame *frame = new QFrame;
-    QVBoxLayout *frameLayout = new QVBoxLayout(frame);
-
-    toolsList = new QListView;
-    toolsList->setDragEnabled(true);
-    toolsList->setViewMode(QListView::IconMode);
-    toolsList->setIconSize(QSize(50, 50));
-    toolsList->setGridSize(QSize(70, 70));
-    toolsList->setSpacing(10);
-    toolsList->setMovement(QListView::Snap);
-
-    ToolsList *toolsModel = new ToolsList(this);
-    toolsList->setModel(toolsModel);
-
-    frameLayout->addWidget(toolsList);
-    setCentralWidget(frame);
 
 }
 
