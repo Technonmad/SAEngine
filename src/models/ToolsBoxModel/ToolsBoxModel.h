@@ -14,7 +14,7 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const;
 
-    QVariant data() const;
+    QVariant data(const QModelIndex &index, int role) const;
 
     ToolsBoxItem* itemForIndex(const QModelIndex& index) const;
 
@@ -26,6 +26,11 @@ public:
 
     QModelIndex index(int row, int column, const QModelIndex& parent) const;
 
+    QModelIndex parent(const QModelIndex& index) const;
+
+    bool setHeaderData(int, Qt::Orientation, const QVariant &, int = Qt::EditRole);
+
+    bool setData(const QModelIndex& index, const QVariant& value, int role);
 private:
     QString m_toolName;
     QIcon m_icon;

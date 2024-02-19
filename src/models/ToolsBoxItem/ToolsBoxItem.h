@@ -17,7 +17,10 @@ public:
     void setName(const QString& name);
     ToolsBoxItem* parent() const;
     bool hasChildren() const;
+    int childCount() const;
     void addChild(ToolsBoxItem* item);
+    ToolsBoxItem* childAt(int row) const;
+    int rowOfChild(ToolsBoxItem* child) const;
 
 private:
     QString m_name;
