@@ -1,8 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "ToolsBoxModel/ToolsBoxModel.h"
 #include <QMainWindow>
 #include <QListView>
+#include <QStandardItemModel>
+#include <QStandardItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,7 +23,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    void setupWidgets();
-    QListView *toolsList;
+    QSharedPointer<ToolsBoxModel> model;
+    QSharedPointer<QStandardItem> item1;
+    QSharedPointer<QStandardItem> item2;
+    QSharedPointer<QStandardItem> item3;
 };
 #endif // MAINWINDOW_H
