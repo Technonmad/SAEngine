@@ -2,6 +2,10 @@
 #define MANAGERAGENT_H
 
 #include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QPainter>
+#include <QStyle>
+#include <QStyleOption>
 #include "Edge/Edge.h"
 #include "graphWidget/GraphWidget.h"
 
@@ -19,7 +23,7 @@ public:
     int type() const override { return Type; }
 
     void calculateForces();
-    void advancePosition();
+    bool advancePosition();
 
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
