@@ -6,8 +6,10 @@
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
-#include "Edge/Edge.h"
-#include "graphWidget/GraphWidget.h"
+//#include "Edge.h"
+#include "GraphWidget/GraphWidget.h"
+
+class Edge;
 
 class ManagerAgent: public QGraphicsItem
 {

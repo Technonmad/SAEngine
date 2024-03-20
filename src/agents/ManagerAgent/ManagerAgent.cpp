@@ -1,4 +1,5 @@
 #include "ManagerAgent.h"
+#include "Edge/Edge.h"
 
 ManagerAgent::ManagerAgent(GraphWidget *graphWidget)
     : graph(graphWidget)

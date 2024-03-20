@@ -13,3 +13,9 @@ add_library(Edge STATIC ${EdgeSrc})
 target_include_directories(Edge PUBLIC
     ../
 )
+
+target_link_libraries(
+    Edge PRIVATE
+    ManagerAgent
+#    GraphWidget
+)
