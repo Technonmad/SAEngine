@@ -7,7 +7,7 @@ add_subdirectory(src/models)
 add_subdirectory(src/ui)
 add_subdirectory(src/agents)
 add_subdirectory(src/tools)
-add_subdirectory(src/utilities)
+add_subdirectory(src/baseObjects)
 add_subdirectory(src/customWidgets)
 
 qt_add_resources(SAEngine "tools_images"

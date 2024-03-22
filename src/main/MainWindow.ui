@@ -29,7 +29,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QGraphicsView" name="modelWindow">
+     <widget class="GraphWidget" name="modelWindow">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>3</horstretch>
@@ -52,6 +52,13 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GraphWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>GraphWidget/GraphWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

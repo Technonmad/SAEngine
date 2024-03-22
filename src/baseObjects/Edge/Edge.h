@@ -11,15 +11,15 @@
    defined later.  We will not be able to make any use of "ManagerAgent" before it has been
    defined, but we will at least be able to declare pointers to it. */
 
-class ManagerAgent;
+class Node;
 
 class Edge : public QGraphicsItem
 {
 public:
-    Edge(ManagerAgent *sourceNode, ManagerAgent *destNode);
+    Edge(Node *sourceNode, Node *destNode);
 
-    ManagerAgent *sourceNode() const;
-    ManagerAgent *destNode() const;
+    Node *sourceNode() const;
+    Node *destNode() const;
 
     void adjust();
 
@@ -31,7 +31,7 @@ protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 private:
-    ManagerAgent *source, *dest;
+    Node *source, *dest;
 
     QPointF sourcePoint;
     QPointF destPoint;

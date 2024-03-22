@@ -1,19 +1,19 @@
 #include "Edge.h"
-#include "ManagerAgent/ManagerAgent.h"
+#include "Node/Node.h"
 
-Edge::Edge(ManagerAgent *sourceNode, ManagerAgent *destNode)
+Edge::Edge(Node *sourceNode, Node *destNode)
     : source(sourceNode), dest(destNode)
 {
     setAcceptedMouseButtons(Qt::NoButton);
     source->addEdge(this);
 }
 
-ManagerAgent *Edge::sourceNode() const
+Node *Edge::sourceNode() const
 {
     return source;
 }
 
-ManagerAgent *Edge::destNode() const
+Node *Edge::destNode() const
 {
     return dest;
 }

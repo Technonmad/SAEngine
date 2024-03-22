@@ -13,3 +13,9 @@ add_library(GraphWidget STATIC ${GraphWidgetSrc})
 target_include_directories(GraphWidget PUBLIC
     ../
 )
+
+target_link_libraries(
+    GraphWidget PRIVATE
+    Node
+    Edge
+)

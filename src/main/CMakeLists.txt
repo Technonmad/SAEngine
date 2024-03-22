@@ -26,4 +26,5 @@ target_link_libraries(
     Qt::Gui
     Qt6::Widgets
     ToolsBoxModel
+		GraphWidget
 )
