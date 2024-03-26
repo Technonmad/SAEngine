@@ -11,16 +11,16 @@ class GraphWidget: public QGraphicsView
 public:
     GraphWidget(QWidget *parent = nullptr);
 
-    void itemMoved();
+//    void itemMoved();
 
 public slots:
-    void shuffle();
+//    void shuffle();
     void zoomIn();
     void zoomOut();
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
+//    void timerEvent(QTimerEvent *event) override;
 #if QT_CONFIG(wheelevent)
     void wheelEvent(QWheelEvent *event) override;
 #endif

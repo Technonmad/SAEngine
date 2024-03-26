@@ -8,6 +8,8 @@ set(GraphWidgetSrc
     GraphWidget.cpp
 )
 
+set(CMAKE_AUTOMOC ON)
+
 add_library(GraphWidget STATIC ${GraphWidgetSrc})
 
 target_include_directories(GraphWidget PUBLIC
@@ -16,6 +18,7 @@ target_include_directories(GraphWidget PUBLIC
 
 target_link_libraries(
     GraphWidget PRIVATE
+		Qt6::Widgets
     Node
     Edge
 )

@@ -59,10 +59,20 @@ GraphWidget::GraphWidget(QWidget *parent)
         node9->setPos(50, 50);
 }
 
-void GraphWidget::itemMoved()
+//void GraphWidget::itemMoved()
+//{
+//    if (!timerId)
+//        timerId = startTimer(1000 / 25);
+//}
+
+void GraphWidget::zoomIn()
 {
-    if (!timerId)
-        timerId = startTimer(1000 / 25);
+    scaleView(qreal(1.2));
+}
+
+void GraphWidget::zoomOut()
+{
+    scaleView(1 / qreal(1.2));
 }
 
 void GraphWidget::keyPressEvent(QKeyEvent *event)
@@ -86,44 +96,46 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Minus:
         zoomOut();
         break;
-    case Qt::Key_Space:
-    case Qt::Key_Enter:
-        shuffle();
-        break;
+//    case Qt::Key_Space:
+//    case Qt::Key_Enter:
+//        shuffle();
+//        break;
     default:
         QGraphicsView::keyPressEvent(event);
     }
 }
 
-void GraphWidget::timerEvent(QTimerEvent *event)
-{
-    Q_UNUSED(event);
-    QList<Node *> nodes;
-    const QList<QGraphicsItem *> items = scene()->items();
-    for (QGraphicsItem *item : items) {
-        if (Node *node = qgraphicsitem_cast<Node *>(item))
-            nodes << node;
-    }
+//void GraphWidget::timerEvent(QTimerEvent *event)
+//{
+//    Q_UNUSED(event);
+//    QList<Node *> nodes;
+//    const QList<QGraphicsItem *> items = scene()->items();
+//    for (QGraphicsItem *item : items) {
+//        if (Node *node = qgraphicsitem_cast<Node *>(item))
+//            nodes << node;
+//    }
 
-    for (Node *node : std::as_const(nodes))
-        node->calculateForces();
+//    for (Node *node : std::as_const(nodes))
+//        node->calculateForces();
 
-    bool itemsMoved = false;
-    for (Node *node : std::as_const(nodes)) {
-        if (node->advancePosition())
-            itemsMoved = true;
-    }
+//    bool itemsMoved = false;
+//    for (Node *node : std::as_const(nodes)) {
+//        if (node->advancePosition())
+//            itemsMoved = true;
+//    }
 
-    if (!itemsMoved) {
-        killTimer(timerId);
-        timerId = 0;
-    }
-}
+//    if (!itemsMoved) {
+//        killTimer(timerId);
+//        timerId = 0;
+//    }
+//}
 
+#if QT_CONFIG(wheelevent)
 void GraphWidget::wheelEvent(QWheelEvent *event)
 {
     scaleView(pow(2., -event->angleDelta().y() / 240.0));
 }
+#endif
 
 void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
 {
@@ -150,7 +162,7 @@ void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)
     // Text
     QRectF textRect(sceneRect.left() + 4, sceneRect.top() + 4,
                     sceneRect.width() - 4, sceneRect.height() - 4);
-    QString message(tr("ababababbbbbbbbbbbbbbbbbbbbbbbbbbbabaab"));
+    QString message(tr("Nodes test"));
 
     QFont font = painter->font();
     font.setBold(true);
