@@ -1,35 +1,45 @@
 #ifndef GRAPHWIDGET_H
 #define GRAPHWIDGET_H
 
-#include <QGraphicsView>
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
+#include <QMenu>
 
-class Node;
-
-class GraphWidget: public QGraphicsView
+class GraphWidget: public QGraphicsScene
 {
     Q_OBJECT
-public:
-    GraphWidget(QWidget *parent = nullptr);
 
-//    void itemMoved();
+public:
+    enum Mode { InsertItem, InsertLine, /*InsertText, */MoveItem };
+
+    explicit GraphWidget(QMenu *itemMenu, QObject *parent = nullptr);
+    QColor lineColor() const;
+    void setLineColor(const QColor &color);
 
 public slots:
-//    void shuffle();
-    void zoomIn();
-    void zoomOut();
+    void setMode(Mode mode);
+    void setItemType(DiagramItem::DiagramType type);
+    void editorLostFocus(DiagramTextItem *item);
+
+signals:
+    void itemInserted(DiagramItem *item);
+    void itemSelected(QGraphicsItem *item);
 
 protected:
-    void keyPressEvent(QKeyEvent *event) override;
-//    void timerEvent(QTimerEvent *event) override;
-#if QT_CONFIG(wheelevent)
-    void wheelEvent(QWheelEvent *event) override;
-#endif
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
-    void scaleView(qreal scaleFactor);
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
 private:
-    int timerId = 0;
-    Node *centerNode;
-};
+    bool isItemChange(int type) const;
 
+    DiagramItem::DiagramType myItemType;
+    QMenu *myItemMenu;
+    QGraphicsLineItem *line;
+    Mode myMode;
+    bool leftButtonDown;
+    QPointF startPoint;
+    QColor myLineColor;
+};
 #endif // GRAPHWIDGET_H
