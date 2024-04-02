@@ -3,19 +3,19 @@ cmake_minimum_required(VERSION 3.5.0)
 find_package(Qt6Widgets)
 include_directories(${Qt6Widgets_INCLUDE_DIRS})
 
-set(NodeSrc
-    Node.h
-    Node.cpp
+set(ItemSrc
+	  Item.h
+		Item.cpp
 )
 
-add_library(Node STATIC ${NodeSrc})
+add_library(Item STATIC ${ItemSrc})
 
-target_include_directories(Node PUBLIC
+target_include_directories(Item PUBLIC
     ../
 )
 
 target_link_libraries(
-    Node PRIVATE
+	  Item PRIVATE
     Edge
     GraphWidget
 )
