@@ -1,21 +1,21 @@
-#include "GraphWidget.h"
-
+#include "DiagramScene.h"
 #include <QTextCursor>
+#include "Arrow/Arrow.h"
 
-GraphWidget::GraphWidget(QMenu *itemMenu, QObject *parent)
+DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
     : QGraphicsScene(parent)
 {
     myItemMenu = itemMenu;
     myMode = MoveItem;
-    myItemType = DiagramItem::Step;
+    myItemType = Item::Step;
 }
 
-QColor GraphWidget::lineColor() const
+QColor DiagramScene::lineColor() const
 {
     return myLineColor;
 }
 
-void GraphWidget::setLineColor(const QColor &color)
+void DiagramScene::setLineColor(const QColor &color)
 {
     myLineColor = color;
     if (isItemChange(Arrow::Type)) {
@@ -25,7 +25,7 @@ void GraphWidget::setLineColor(const QColor &color)
     }
 }
 
-void GraphWidget::editorLostFocus(DiagramTextItem *item)
+void DiagramScene::editorLostFocus(DiagramTextItem *item)
 {
     QTextCursor cursor = item->textCursor();
     cursor.clearSelection();
@@ -37,15 +37,15 @@ void GraphWidget::editorLostFocus(DiagramTextItem *item)
     }
 }
 
-void GraphWidget::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
-    DiagramItem *item;
+    Item *item;
     switch (myMode) {
         case InsertItem:
-            item = new DiagramItem(myItemType, myItemMenu);
+            item = new Item(myItemType, myItemMenu);
             addItem(item);
             item->setPos(mouseEvent->scenePos());
             emit itemInserted(item);
@@ -62,7 +62,7 @@ void GraphWidget::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QGraphicsScene::mousePressEvent(mouseEvent);
 }
 
-void GraphWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (myMode == InsertLine && line != nullptr) {
         QLineF newLine(line->line().p1(), mouseEvent->scenePos());
@@ -73,7 +73,7 @@ void GraphWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
-void GraphWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (line != nullptr && myMode == InsertLine) {
         QList<QGraphicsItem *> startItems = items(line->line().p1());
@@ -87,12 +87,12 @@ void GraphWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         delete line;
 
         if ( startItems.count() > 0 && endItems.count() > 0 &&
-            startItems.first()->type() == DiagramItem::Type &&
-            endItems.first()->type() == DiagramItem::Type &&
+            startItems.first()->type() == Item::Type &&
+            endItems.first()->type() == Item::Type &&
             startItems.first() != endItems.first() )
         {
-            DiagramItem *startItem = qgraphicsitem_cast<DiagramItem *>(startItems.first());
-            DiagramItem *endItem = qgraphicsitem_cast<DiagramItem *>(endItems.first());
+            Item *startItem = qgraphicsitem_cast<Item *>(startItems.first());
+            Item *endItem = qgraphicsitem_cast<Item *>(endItems.first());
             Arrow *arrow = new Arrow(startItem, endItem);
             arrow->setColor(myLineColor);
             startItem->addArrow(arrow);
@@ -106,7 +106,7 @@ void GraphWidget::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 }
 
-bool GraphWidget::isItemChange(int type) const
+bool DiagramScene::isItemChange(int type) const
 {
     const QList<QGraphicsItem *> items = selectedItems();
     const auto cb = [type](const QGraphicsItem *item) { return item->type() == type; };

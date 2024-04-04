@@ -1,1 +1,1 @@
-add_subdirectory(GraphWidget/)
+add_subdirectory(DiagramScene/)

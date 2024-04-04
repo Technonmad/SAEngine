@@ -1,29 +1,31 @@
-#ifndef GRAPHWIDGET_H
-#define GRAPHWIDGET_H
+#ifndef DIAGRAMSCENE_H
+#define DIAGRAMSCENE_H
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
+#include "Item/Item.h"
+#include "Arrow/Arrow.h"
 
-class GraphWidget: public QGraphicsScene
+class DiagramScene: public QGraphicsScene
 {
     Q_OBJECT
 
 public:
     enum Mode { InsertItem, InsertLine, /*InsertText, */MoveItem };
 
-    explicit GraphWidget(QMenu *itemMenu, QObject *parent = nullptr);
+    explicit DiagramScene(QMenu *itemMenu, QObject *parent = nullptr);
     QColor lineColor() const;
     void setLineColor(const QColor &color);
 
 public slots:
     void setMode(Mode mode);
-    void setItemType(DiagramItem::DiagramType type);
-    void editorLostFocus(DiagramTextItem *item);
+    void setItemType(Item::DiagramType type);
+    void editorLostFocus(TextItem *item);
 
 signals:
-    void itemInserted(DiagramItem *item);
+    void itemInserted(Item *item);
     void itemSelected(QGraphicsItem *item);
 
 protected:
@@ -34,7 +36,7 @@ protected:
 private:
     bool isItemChange(int type) const;
 
-    DiagramItem::DiagramType myItemType;
+    Item::DiagramType myItemType;
     QMenu *myItemMenu;
     QGraphicsLineItem *line;
     Mode myMode;
@@ -42,4 +44,4 @@ private:
     QPointF startPoint;
     QColor myLineColor;
 };
-#endif // GRAPHWIDGET_H
+#endif // DIAGRAMSCENE_H
