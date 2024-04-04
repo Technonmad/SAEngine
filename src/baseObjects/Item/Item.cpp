@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "Arrow/Arrow.h"
 #include "qgraphicssceneevent.h"
 
 Item::Item(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent)
@@ -31,6 +32,11 @@ void Item::removeArrows()
 Item::DiagramType Item::diagramType() const
 {
     return myDiagramType;
+}
+
+QPolygonF Item::polygon() const
+{
+    return myPolygon;
 }
 
 QPixmap Item::image() const
