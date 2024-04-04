@@ -3,19 +3,18 @@ cmake_minimum_required(VERSION 3.5.0)
 find_package(Qt6Widgets)
 include_directories(${Qt6Widgets_INCLUDE_DIRS})
 
-set(ItemSrc
-	  Item.h
-		Item.cpp
+set(ArrowSrc
+    Arrow.h
+    Arrow.cpp
 )
 
-add_library(Item STATIC ${ItemSrc})
+add_library(Arrow STATIC ${ArrowSrc})
 
-target_include_directories(Item PUBLIC
+target_include_directories(Arrow PUBLIC
     ../
 )
 
 target_link_libraries(
-	  Item PRIVATE
-		Arrow
-    GraphWidget
+    Arrow PRIVATE
+    Item
 )
