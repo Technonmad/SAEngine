@@ -8,6 +8,8 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
     myItemMenu = itemMenu;
     myMode = MoveItem;
     myItemType = Item::Step;
+    line = nullptr;
+    myLineColor = Qt::black;
 }
 
 QColor DiagramScene::lineColor() const
@@ -25,17 +27,27 @@ void DiagramScene::setLineColor(const QColor &color)
     }
 }
 
-void DiagramScene::editorLostFocus(DiagramTextItem *item)
+void DiagramScene::setMode(Mode mode)
 {
-    QTextCursor cursor = item->textCursor();
-    cursor.clearSelection();
-    item->setTextCursor(cursor);
-
-    if (item->toPlainText().isEmpty()) {
-        removeItem(item);
-        item->deleteLater();
-    }
+    myMode = mode;
 }
+
+void DiagramScene::setItemType(Item::DiagramType type)
+{
+    myItemType = type;
+}
+
+//void DiagramScene::editorLostFocus(DiagramTextItem *item)
+//{
+//    QTextCursor cursor = item->textCursor();
+//    cursor.clearSelection();
+//    item->setTextCursor(cursor);
+
+//    if (item->toPlainText().isEmpty()) {
+//        removeItem(item);
+//        item->deleteLater();
+//    }
+//}
 
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {

@@ -6,7 +6,6 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 #include "Item/Item.h"
-#include "Arrow/Arrow.h"
 
 class DiagramScene: public QGraphicsScene
 {
@@ -22,7 +21,7 @@ public:
 public slots:
     void setMode(Mode mode);
     void setItemType(Item::DiagramType type);
-    void editorLostFocus(TextItem *item);
+//    void editorLostFocus(TextItem *item);
 
 signals:
     void itemInserted(Item *item);
