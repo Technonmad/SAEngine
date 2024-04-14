@@ -17,5 +17,4 @@ target_include_directories(Item PUBLIC
 target_link_libraries(
 	  Item PRIVATE
 		Arrow
-    GraphWidget
 )
