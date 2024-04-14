@@ -7,7 +7,7 @@
 
 class Arrow;
 
-class Item: public QGraphicsItem
+class Item: public QGraphicsPolygonItem
 {
 public:
     enum { Type = UserType + 15 };

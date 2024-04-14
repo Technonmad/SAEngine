@@ -3,7 +3,7 @@
 #include "qgraphicssceneevent.h"
 
 Item::Item(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent)
-    : QGraphicsItem(parent),
+    : QGraphicsPolygonItem(parent),
       myDiagramType(diagramType),
       myContextMenu(contextMenu)
 {
@@ -39,9 +39,25 @@ QPolygonF Item::polygon() const
     return myPolygon;
 }
 
+void Item::addArrow(Arrow *arrow)
+{
+    arrows.append(arrow);
+}
+
 QPixmap Item::image() const
 {
+    QPixmap pixmap(250, 250);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    painter.translate(125, 125);
+    painter.drawPolyline(myPolygon);
 
+    return QPixmap{};
+}
+
+int Item::type() const
+{
+    return Type;
 }
 
 void Item::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
