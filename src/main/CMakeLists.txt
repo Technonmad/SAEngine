@@ -22,8 +22,9 @@ qt_add_executable(SAEngine ${SAEngine_SRC})
 # Use the Widgets module from Qt 5
 target_link_libraries(
     SAEngine PUBLIC
-    Qt::Core
-    Qt::Gui
+		Qt6::Core
+		Qt6::Gui
     Qt6::Widgets
-    ToolsBoxModel
+		Item
+		DiagramScene
 )

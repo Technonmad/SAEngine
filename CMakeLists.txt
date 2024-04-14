@@ -5,6 +5,10 @@ project(SAEngine VERSION 0.1 LANGUAGES CXX)
 add_subdirectory(src/main)
 add_subdirectory(src/models)
 add_subdirectory(src/ui)
+add_subdirectory(src/agents)
+add_subdirectory(src/tools)
+add_subdirectory(src/baseObjects)
+add_subdirectory(src/customWidgets)
 
 qt_add_resources(SAEngine "tools_images"
         PREFIX "/images/tools"
