@@ -11,7 +11,15 @@ class Item: public QGraphicsPolygonItem
 {
 public:
     enum { Type = UserType + 15 };
-    enum DiagramType { Step, Conditional, StartEnd, Io };
+    enum DiagramType {
+        Warehouse,
+        Manager,
+        ProductionLine,
+        MonitoringSystem,
+        PackingLine,
+        CarTransfer,
+        Customer
+    };
 
     Item( DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent = nullptr );
 
