@@ -9,13 +9,3 @@ add_subdirectory(src/agents)
 add_subdirectory(src/tools)
 add_subdirectory(src/baseObjects)
 add_subdirectory(src/customWidgets)
-
-qt_add_resources(SAEngine "tools_images"
-        PREFIX "/images/tools"
-        FILES images/tools/arm.png
-)
-
-qt_add_resources(SAEngine "agents_images"
-        PREFIX "/images/agents"
-        FILES images/agents/arm.png
-)
