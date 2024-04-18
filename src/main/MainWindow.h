@@ -3,6 +3,7 @@
 
 #include <Item/Item.h>
 #include <QAbstractButton>
+#include <QAction>
 #include <QComboBox>
 #include <QToolBox>
 #include <QToolButton>
@@ -26,6 +27,7 @@ public:
 private slots:
     void backgroundButtonGroupClicked(QAbstractButton *button);
     void buttonGroupClicked(QAbstractButton *button);
+    void processGroupClicked(QAbstractButton *button);
     void deleteItem();
     void pointerGroupClicked();
     void bringToFront();
@@ -46,7 +48,8 @@ private:
     QWidget *createBackgroundCellWidget(const QString &text,
                                         const QString &image);
     QWidget *createCellWidget(const QString &text,
-                              Item::DiagramType type);
+                              Item::DiagramType type,
+                              const QString &image);
 
     QMenu *createColorMenu(const char *slot, QColor defaultColor);
     QIcon createColorToolButtonIcon(const QString &imageFile, QColor color);
@@ -56,6 +59,7 @@ private:
     QGraphicsView *view;
 
     QAction *exitAction;
+    QAction *saveAction;
     QAction *addAction;
     QAction *deleteAction;
 
@@ -76,12 +80,12 @@ private:
 
     QToolBox *toolBox;
     QButtonGroup *buttonGroup;
+    QButtonGroup *processGroup;
     QButtonGroup *pointerTypeGroup;
     QButtonGroup *backgroundButtonGroup;
     QToolButton *fillColorToolButton;
     QToolButton *lineColorToolButton;
     QAction *fillAction;
     QAction *lineAction;
-//    Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

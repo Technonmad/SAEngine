@@ -4,10 +4,7 @@
 #include<QtWidgets>
 
 MainWindow::MainWindow()
-//    : QMainWindow(parent)
-//    , ui(new Ui::MainWindow)
 {
-//    ui->setupui(this);
     createActions();
     createToolBox();
     createMenus();
@@ -40,14 +37,13 @@ void MainWindow::backgroundButtonGroupClicked(QAbstractButton *button)
         if (myButton != button)
             button->setChecked(false);
     }
-    // TODO заполнить картинки
     QString text = button->text();
     if (text == tr("White Grid"))
-        scene->setBackgroundBrush(QPixmap(""));
+        scene->setBackgroundBrush(QPixmap(":/images/backgrounds/background1.png"));
     else if (text == tr("Gray Grid"))
-        scene->setBackgroundBrush(QPixmap(""));
+        scene->setBackgroundBrush(QPixmap(":/images/backgrounds/background2.png"));
     else
-        scene->setBackgroundBrush(QPixmap(""));
+        scene->setBackgroundBrush(QPixmap(":/images/backgrounds/background3.png"));
 
     scene->update();
     view->update();
@@ -56,6 +52,19 @@ void MainWindow::backgroundButtonGroupClicked(QAbstractButton *button)
 void MainWindow::buttonGroupClicked(QAbstractButton *button)
 {
     const QList<QAbstractButton *> buttons = buttonGroup->buttons();
+    for (QAbstractButton *myButton : buttons) {
+        if (myButton != button)
+            button->setChecked(false);
+    }
+
+    const int id = buttonGroup->id(button);
+    scene->setItemType(Item::DiagramType(id));
+    scene->setMode(DiagramScene::InsertItem);
+}
+
+void MainWindow::processGroupClicked(QAbstractButton *button)
+{
+    const QList<QAbstractButton *> buttons = processGroup->buttons();
     for (QAbstractButton *myButton : buttons) {
         if (myButton != button)
             button->setChecked(false);
@@ -156,7 +165,7 @@ void MainWindow::lineColorChanged()
 {
     lineAction = qobject_cast<QAction *>(sender());
     lineColorToolButton->setIcon(createColorToolButtonIcon(
-                                     "",
+                                     ":/images/toolbar/lineColor.png",
                                      qvariant_cast<QColor>(lineAction->data())));
     lineButtonTriggered();
 }
@@ -169,7 +178,7 @@ void MainWindow::lineButtonTriggered()
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About SAEngine"),
-                       tr("blablabla"));
+                       tr("SAEngine is a virtual laboratory for testing and prototyping multiagent systems."));
 }
 
 //void MainWindow::itemSelected(QGraphicsItem *item)
@@ -189,12 +198,32 @@ void MainWindow::createToolBox()
     connect(buttonGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
             this, &MainWindow::buttonGroupClicked);
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(createCellWidget(tr("test1"), Item::Conditional), 0, 0);
-    layout->addWidget(createCellWidget(tr("test2"), Item::Step), 0, 1);
-    layout->addWidget(createCellWidget(tr("test3"), Item::Io), 1, 0);
+    layout->addWidget(createCellWidget(tr("test1"), Item::Manager, ":/images/agents/arm.png"), 0, 0);
+    layout->addWidget(createCellWidget(tr("test2"), Item::Customer, ":/images/agents/arm.png"), 0, 1);
+    layout->addWidget(createCellWidget(tr("test1"), Item::Manager, ":/images/agents/arm.png"), 1, 0);
+    layout->addWidget(createCellWidget(tr("test1"), Item::Manager, ":/images/agents/arm.png"), 1, 1);
+
+    layout->setRowStretch(3, 10);
+    layout->setColumnStretch(2, 10);
 
     QWidget *itemWidget = new QWidget;
     itemWidget->setLayout(layout);
+
+    processGroup = new QButtonGroup(this);
+    processGroup->setExclusive(false);
+    connect(processGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
+            this, &MainWindow::processGroupClicked);
+    QGridLayout *processLayout = new QGridLayout;
+    processLayout->addWidget(createCellWidget(tr("test1"), Item::PackingLine, ":/images/agents/warehouse.png"), 0, 0);
+    processLayout->addWidget(createCellWidget(tr("test2"), Item::ProductionLine, ":/images/agents/arm.png"), 0, 1);
+    processLayout->addWidget(createCellWidget(tr("test1"), Item::PackingLine, ":/images/agents/warehouse.png"), 1, 0);
+    processLayout->addWidget(createCellWidget(tr("test2"), Item::ProductionLine, ":/images/agents/arm.png"), 1, 1);
+
+    processLayout->setRowStretch(3, 10);
+    processLayout->setColumnStretch(2, 10);
+
+    QWidget *processWidget = new QWidget;
+    processWidget->setLayout(processLayout);
 
     backgroundButtonGroup = new QButtonGroup(this);
     connect(backgroundButtonGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
@@ -202,7 +231,9 @@ void MainWindow::createToolBox()
 
     QGridLayout *backgroundLayout = new QGridLayout;
     backgroundLayout->addWidget(createBackgroundCellWidget(tr("White Grid"),
-                                                           ""), 0, 0);
+                                                           ":/images/backgrounds/background1.png"), 0, 0);
+    backgroundLayout->addWidget(createBackgroundCellWidget(tr("Gray Grid"),
+                                                           ":/images/backgrounds/background2.png"), 0, 1);
 
     backgroundLayout->setRowStretch(2, 10);
     backgroundLayout->setColumnStretch(2, 10);
@@ -214,28 +245,33 @@ void MainWindow::createToolBox()
     toolBox->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Ignored));
     toolBox->setMinimumWidth(itemWidget->sizeHint().width());
     toolBox->addItem(itemWidget, tr("Agents"));
+    toolBox->addItem(processWidget, tr("Processes"));
     toolBox->addItem(backgroundWidget, tr("Backgrounds"));
 }
 
 void MainWindow::createActions()
 {
-    toFrontAction = new QAction(QIcon(""),
+    toFrontAction = new QAction(QIcon(":/images/toolbar/toFront.png"),
                                 tr("Bring to &Front"), this);
     toFrontAction->setStatusTip(tr("Bring item to front"));
     connect(toFrontAction, &QAction::triggered, this, &MainWindow::bringToFront);
 
-    sendBackAction = new QAction(QIcon(""),
+    sendBackAction = new QAction(QIcon(":/images/toolbar/toBack.png"),
                                 tr("Send to &Back"), this);
     sendBackAction->setStatusTip(tr("Send item to back"));
     connect(sendBackAction, &QAction::triggered, this, &MainWindow::sendToBack);
 
-    deleteAction = new QAction(QIcon(""),
+    deleteAction = new QAction(QIcon(":/images/toolbar/remove.png"),
                                 tr("&Delete"), this);
     deleteAction->setStatusTip(tr("Delete item from diagram"));
     connect(deleteAction, &QAction::triggered, this, &MainWindow::deleteItem);
 
-    aboutAction = new QAction(QIcon(""),
-                                tr("&About"), this);
+    exitAction = new QAction(tr("E&xit"), this);
+    exitAction->setShortcuts(QKeySequence::Quit);
+    exitAction->setStatusTip(tr("Quit SAEngine"));
+    connect(exitAction, &QAction::triggered, this, &QWidget::close);
+
+    aboutAction = new QAction(tr("&About"), this);
     connect(aboutAction, &QAction::triggered, this, &MainWindow::about);
 }
 
@@ -243,6 +279,8 @@ void MainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(exitAction);
+//    TODO: make a save action
+//    fileMenu->addAction(saveAction);
 
     itemMenu = menuBar()->addMenu(tr("&Item"));
     itemMenu->addAction(deleteAction);
@@ -261,37 +299,26 @@ void MainWindow::createToolBars()
     editToolBar->addAction(toFrontAction);
     editToolBar->addAction(sendBackAction);
 
-    fillColorToolButton = new QToolButton;
-    fillColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    fillColorToolButton->setMenu(createColorMenu(SLOT(itemColorChanged()), Qt::white));
-    fillAction = fillColorToolButton->menu()->defaultAction();
-    fillColorToolButton->setIcon(createColorToolButtonIcon(
-                                     "", Qt::white));
-//    connect(fillColorToolButton, &QAbstractButton::clicked,
-//            this, &MainWindow::fillButtonTriggered);
-
     lineColorToolButton = new QToolButton;
     lineColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    lineColorToolButton->setMenu(createColorMenu(SLOT(lineColorChanged()),
-                                                 Qt::black));
+    lineColorToolButton->setMenu(createColorMenu(SLOT(lineColorChanged()), Qt::black));
     lineAction = lineColorToolButton->menu()->defaultAction();
     lineColorToolButton->setIcon(createColorToolButtonIcon(
-                                     "", Qt::black));
+                                     ":/images/toolbar/lineColor.png", Qt::black));
     connect(lineColorToolButton, &QAbstractButton::clicked,
             this, &MainWindow::lineButtonTriggered);
 
     colorToolBar = addToolBar(tr("Color"));
-    colorToolBar->addWidget(fillColorToolButton);
     colorToolBar->addWidget(lineColorToolButton);
 
     QToolButton *pointerButton = new QToolButton;
     pointerButton->setCheckable(true);
     pointerButton->setChecked(true);
-    pointerButton->setIcon(QIcon(""));
+    pointerButton->setIcon(QIcon(":/images/toolbar/pointer.png"));
 
     QToolButton *linePointerButton = new QToolButton;
     linePointerButton->setCheckable(true);
-    linePointerButton->setIcon(QIcon(""));
+    linePointerButton->setIcon(QIcon(":/images/toolbar/linePointer.png"));
 
     pointerTypeGroup = new QButtonGroup(this);
     pointerTypeGroup->addButton(pointerButton, int(DiagramScene::MoveItem));
@@ -332,13 +359,13 @@ QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QStri
     return widget;
 }
 
-QWidget *MainWindow::createCellWidget(const QString &text, Item::DiagramType type)
+QWidget *MainWindow::createCellWidget(const QString &text, Item::DiagramType type, const QString &image)
 {
     Item item(type, itemMenu);
-    QIcon icon(item.image());
+//    QIcon icon(item.image());
 
     QToolButton *button = new QToolButton;
-    button->setIcon(icon);
+    button->setIcon(QIcon(image));
     button->setIconSize(QSize(50,50));
     button->setCheckable(true);
     buttonGroup->addButton(button, int(type));
@@ -355,15 +382,17 @@ QWidget *MainWindow::createCellWidget(const QString &text, Item::DiagramType typ
 
 QIcon MainWindow::createColorToolButtonIcon(const QString &imageFile, QColor color)
 {
-    QPixmap pixmap(50,80);
+    QPixmap image(imageFile);
+    QPixmap scaledImage = image.scaled(50, 80, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+
+    QPixmap pixmap(50, 80);
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    QPixmap image(imageFile);
 
     QRect target(4, 0, 42, 43);
     QRect source(0, 0, 42, 43);
     painter.fillRect(QRect(0, 60, 50, 80), color);
-    painter.drawPixmap(target, image, source);
+    painter.drawPixmap(target, scaledImage, source);
 
     return QIcon(pixmap);
 }
