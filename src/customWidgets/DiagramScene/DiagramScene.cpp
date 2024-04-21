@@ -1,13 +1,14 @@
 #include "DiagramScene.h"
 #include <QTextCursor>
 #include "Arrow/Arrow.h"
+#include "Item/GraphicsItemFactory.h"
 
 DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
-    : QGraphicsScene(parent)
+    : QGraphicsScene(parent), itemFactory(std::make_unique<GraphicsItemFactory>(GraphicsItemFactory()))
 {
     myItemMenu = itemMenu;
     myMode = MoveItem;
-    myItemType = Item::Manager;
+    myItemType = GraphicsItem::Manager;
     line = nullptr;
     myLineColor = Qt::black;
 }
@@ -32,7 +33,7 @@ void DiagramScene::setMode(Mode mode)
     myMode = mode;
 }
 
-void DiagramScene::setItemType(Item::DiagramType type)
+void DiagramScene::setItemType(GraphicsItem::DiagramType type/*Item::DiagramType type*/)
 {
     myItemType = type;
 }
@@ -54,10 +55,12 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
-    Item *item;
+//    Item *item;
+    GraphicsItem *item;
     switch (myMode) {
         case InsertItem:
-            item = new Item(myItemType, myItemMenu);
+//            item = new Item(myItemType, myItemMenu);
+            item = itemFactory.get()->create(myItemType, myItemMenu);
             addItem(item);
             item->setPos(mouseEvent->scenePos());
             emit itemInserted(item);
@@ -85,38 +88,38 @@ void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
-void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
-{
-    if (line != nullptr && myMode == InsertLine) {
-        QList<QGraphicsItem *> startItems = items(line->line().p1());
-        if (startItems.count() && startItems.first() == line)
-            startItems.removeFirst();
-        QList<QGraphicsItem *> endItems = items(line->line().p2());
-        if (endItems.count() && endItems.first() == line)
-            endItems.removeFirst();
+//void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+//{
+//    if (line != nullptr && myMode == InsertLine) {
+//        QList<QGraphicsItem *> startItems = items(line->line().p1());
+//        if (startItems.count() && startItems.first() == line)
+//            startItems.removeFirst();
+//        QList<QGraphicsItem *> endItems = items(line->line().p2());
+//        if (endItems.count() && endItems.first() == line)
+//            endItems.removeFirst();
 
-        removeItem(line);
-        delete line;
+//        removeItem(line);
+//        delete line;
 
-        if ( startItems.count() > 0 && endItems.count() > 0 &&
-            startItems.first()->type() == Item::Type &&
-            endItems.first()->type() == Item::Type &&
-            startItems.first() != endItems.first() )
-        {
-            Item *startItem = qgraphicsitem_cast<Item *>(startItems.first());
-            Item *endItem = qgraphicsitem_cast<Item *>(endItems.first());
-            Arrow *arrow = new Arrow(startItem, endItem);
-            arrow->setColor(myLineColor);
-            startItem->addArrow(arrow);
-            endItem->addArrow(arrow);
-            arrow->setZValue(-1000.0);
-            addItem(arrow);
-            arrow->updatePosition();
-        }
-    }
-    line = nullptr;
-    QGraphicsScene::mouseReleaseEvent(mouseEvent);
-}
+//        if ( startItems.count() > 0 && endItems.count() > 0 &&
+//            startItems.first()->type() == GraphicsItem::Type &&
+//            endItems.first()->type() == GraphicsItem::Type &&
+//            startItems.first() != endItems.first() )
+//        {
+//            GraphicsItem *startItem = qgraphicsitem_cast<GraphicsItem *>(startItems.first());
+//            GraphicsItem *endItem = qgraphicsitem_cast<GraphicsItem *>(endItems.first());
+//            Arrow *arrow = new Arrow(startItem, endItem);
+//            arrow->setColor(myLineColor);
+//            startItem->addArrow(arrow);
+//            endItem->addArrow(arrow);
+//            arrow->setZValue(-1000.0);
+//            addItem(arrow);
+//            arrow->updatePosition();
+//        }
+//    }
+//    line = nullptr;
+//    QGraphicsScene::mouseReleaseEvent(mouseEvent);
+//}
 
 bool DiagramScene::isItemChange(int type) const
 {
