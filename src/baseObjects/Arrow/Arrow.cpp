@@ -1,7 +1,7 @@
 #include "Arrow.h"
-#include "Item/Item.h"
+#include "Item/GraphicsItem.h"
 
-Arrow::Arrow(Item *startItem, Item *endItem, QGraphicsItem *parent)
+Arrow::Arrow(GraphicsItem *startItem, GraphicsItem *endItem, QGraphicsItem *parent)
     : QGraphicsLineItem(parent), myStartItem(startItem), myEndItem(endItem)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -35,12 +35,12 @@ void Arrow::setColor(const QColor &color)
     myColor = color;
 }
 
-Item *Arrow::startItem() const
+GraphicsItem *Arrow::startItem() const
 {
     return myStartItem;
 }
 
-Item *Arrow::endItem() const
+GraphicsItem *Arrow::endItem() const
 {
     return myEndItem;
 }
@@ -53,48 +53,50 @@ void Arrow::updatePosition()
 
 void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if (myStartItem->collidesWithItem(myEndItem))
-        return;
+//    if (myStartItem->collidesWithItem(myEndItem))
+//        return;
 
-    QPen myPen = pen();
-    myPen.setColor(myColor);
-    qreal arrowSize = 20;
-    painter->setPen(myPen);
-    painter->setBrush(myColor);
+//    QPen myPen = pen();
+//    myPen.setColor(myColor);
+//    qreal arrowSize = 20;
+//    painter->setPen(myPen);
+//    painter->setBrush(myColor);
 
-    QLineF centerLine(myStartItem->pos(), myEndItem->pos());
-    QPolygonF endPolygon = myEndItem->polygon();
-    QPointF p1 = endPolygon.first() + myEndItem->pos();
-    QPointF intersectPoint;
-    for (int i = 1; i < endPolygon.count(); ++i) {
-        QPointF p2 = endPolygon.at(i) + myEndItem->pos();
-        QLineF polyLine = QLineF(p1, p2);
-        QLineF::IntersectionType intersectionType =
-                polyLine.intersects(centerLine, &intersectPoint);
-        if (intersectionType == QLineF::BoundedIntersection)
-            break;
-        p1 = p2;
-    }
+//    QLineF centerLine(myStartItem->pos(), myEndItem->pos());
+////    QPolygonF endPolygon = myEndItem->polygon();
+//    QPixmap endPixmap = myEndItem->pixmap();
+////    QPointF p1 = endPolygon.first() + myEndItem->pos();
+//    QPointF p1 = endPixmap.
+//    QPointF intersectPoint;
+//    for (int i = 1; i < endPolygon.count(); ++i) {
+//        QPointF p2 = endPolygon.at(i) + myEndItem->pos();
+//        QLineF polyLine = QLineF(p1, p2);
+//        QLineF::IntersectionType intersectionType =
+//                polyLine.intersects(centerLine, &intersectPoint);
+//        if (intersectionType == QLineF::BoundedIntersection)
+//            break;
+//        p1 = p2;
+//    }
 
-    setLine(QLineF(intersectPoint, myStartItem->pos()));
+//    setLine(QLineF(intersectPoint, myStartItem->pos()));
 
-    double angle = std::atan2(-line().dy(), line().dx());
-    QPointF arrowP1 = line().p1() + QPointF(sin(angle + M_PI / 3) * arrowSize,
-                                            cos(angle + M_PI / 3) * arrowSize);
-    QPointF arrowP2 = line().p1() + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
-                                            cos(angle + M_PI - M_PI / 3) * arrowSize);
+//    double angle = std::atan2(-line().dy(), line().dx());
+//    QPointF arrowP1 = line().p1() + QPointF(sin(angle + M_PI / 3) * arrowSize,
+//                                            cos(angle + M_PI / 3) * arrowSize);
+//    QPointF arrowP2 = line().p1() + QPointF(sin(angle + M_PI - M_PI / 3) * arrowSize,
+//                                            cos(angle + M_PI - M_PI / 3) * arrowSize);
 
-    arrowHead.clear();
-    arrowHead << line().p1() << arrowP1 << arrowP2;
+//    arrowHead.clear();
+//    arrowHead << line().p1() << arrowP1 << arrowP2;
 
-    painter->drawLine(line());
-    painter->drawPolygon(arrowHead);
-    if (isSelected()) {
-        painter->setPen(QPen(myColor, 1, Qt::DashLine));
-        QLineF myLine = line();
-        myLine.translate(0, 4.0);
-        painter->drawLine(myLine);
-        myLine.translate(0, -0.8);
-        painter->drawLine(myLine);
-    }
+//    painter->drawLine(line());
+//    painter->drawPolygon(arrowHead);
+//    if (isSelected()) {
+//        painter->setPen(QPen(myColor, 1, Qt::DashLine));
+//        QLineF myLine = line();
+//        myLine.translate(0, 4.0);
+//        painter->drawLine(myLine);
+//        myLine.translate(0, -0.8);
+//        painter->drawLine(myLine);
+//    }
 }

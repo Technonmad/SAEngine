@@ -7,21 +7,21 @@
 #include <QPen>
 #include <QPainter>
 
-class Item;
+class GraphicsItem;
 
 class Arrow: public QGraphicsLineItem
 {
 public:
     enum { Type = UserType +4 };
 
-    Arrow(Item *startItem, Item *endItem, QGraphicsItem *parent = nullptr);
+    Arrow(GraphicsItem *startItem, GraphicsItem *endItem, QGraphicsItem *parent = nullptr);
 
     int type() const override;
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void setColor(const QColor &color);
-    Item *startItem() const;
-    Item *endItem() const;
+    GraphicsItem *startItem() const;
+    GraphicsItem *endItem() const;
 
     void updatePosition();
 
@@ -30,8 +30,8 @@ protected:
                QWidget *widget = nullptr) override;
 
 private:
-    Item *myStartItem;
-    Item *myEndItem;
+    GraphicsItem *myStartItem;
+    GraphicsItem *myEndItem;
     QPolygonF arrowHead;
     QColor myColor = Qt::black;
 };
