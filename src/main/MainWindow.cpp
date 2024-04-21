@@ -11,8 +11,8 @@ MainWindow::MainWindow()
 
     scene = new DiagramScene(itemMenu, this);
     scene->setSceneRect(QRectF(0, 0, 5000, 5000));
-    connect(scene, &DiagramScene::itemInserted,
-            this, &MainWindow::itemInserted);
+//    connect(scene, &DiagramScene::itemInserted,
+//            this, &MainWindow::itemInserted);
 //    connect(scene, &DiagramScene::itemSelected,
 //            this, &MainWindow::itemSelected);
     createToolBars();
@@ -58,7 +58,7 @@ void MainWindow::buttonGroupClicked(QAbstractButton *button)
     }
 
     const int id = buttonGroup->id(button);
-    scene->setItemType(Item::DiagramType(id));
+    scene->setItemType(GraphicsItem::DiagramType(id));
     scene->setMode(DiagramScene::InsertItem);
 }
 
@@ -71,7 +71,7 @@ void MainWindow::processGroupClicked(QAbstractButton *button)
     }
 
     const int id = buttonGroup->id(button);
-    scene->setItemType(Item::DiagramType(id));
+    scene->setItemType(GraphicsItem::DiagramType(id));
     scene->setMode(DiagramScene::InsertItem);
 }
 
@@ -81,9 +81,9 @@ void MainWindow::deleteItem()
     for (QGraphicsItem *item : std::as_const(selectedItems)) {
         if (item->type() == Arrow::Type) {
             scene->removeItem(item);
-            Arrow *arrow = qgraphicsitem_cast<Arrow *>(item);
-            arrow->startItem()->removeArrow(arrow);
-            arrow->endItem()->removeArrow(arrow);
+//            Arrow *arrow = qgraphicsitem_cast<Arrow *>(item);
+//            arrow->startItem()->removeArrow(arrow);
+//            arrow->endItem()->removeArrow(arrow);
             delete item;
         }
     }
@@ -214,7 +214,7 @@ void MainWindow::createToolBox()
     connect(processGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
             this, &MainWindow::processGroupClicked);
     QGridLayout *processLayout = new QGridLayout;
-    processLayout->addWidget(createCellWidget(tr("test1"), Item::PackingLine, ":/images/agents/warehouse.png"), 0, 0);
+    processLayout->addWidget(createCellWidget(tr("test1"), Item::Warehouse, ":/images/agents/warehouse.png"), 0, 0);
     processLayout->addWidget(createCellWidget(tr("test2"), Item::ProductionLine, ":/images/agents/arm.png"), 0, 1);
     processLayout->addWidget(createCellWidget(tr("test1"), Item::PackingLine, ":/images/agents/warehouse.png"), 1, 0);
     processLayout->addWidget(createCellWidget(tr("test2"), Item::ProductionLine, ":/images/agents/arm.png"), 1, 1);
