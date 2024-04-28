@@ -15,3 +15,28 @@ void ManagerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 {
 
 }
+
+void ManagerItem::addArrow(Arrow *arrow)
+{
+
+}
+
+int ManagerItem::type() const
+{
+    return Type;
+}
+
+QVariant ManagerItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    return value;
+}
+
+void ManagerItem::removeArrow(Arrow *arrow)
+{
+
+}
+
+void ManagerItem::removeArrows()
+{
+
+}
