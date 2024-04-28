@@ -17,7 +17,7 @@ public:
     Arrow(GraphicsItem *startItem, GraphicsItem *endItem, QGraphicsItem *parent = nullptr);
 
     int type() const override;
-    QRectF boundingRect() const override;
+//    QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void setColor(const QColor &color);
     GraphicsItem *startItem() const;
