@@ -10,6 +10,11 @@ GraphicsItem::GraphicsItem(DiagramType diagramType, QMenu *contextMenu, QGraphic
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
 
+//void GraphicsItem::addArrow(Arrow *arrow)
+//{
+//    arrows.append(arrow);
+//}
+
 //QRectF GraphicsItem::boundingRect() const
 //{
 //    return m_pixmapItem->boundingRect().united(m_textItem->boundingRect());

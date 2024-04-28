@@ -26,12 +26,16 @@ public:
 
     QRectF boundingRect() const override = 0;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override = 0;
+    virtual void addArrow(Arrow *arrow) = 0;
+    virtual int type() const override = 0;
+    virtual void removeArrow(Arrow *arrow) = 0;
+    virtual void removeArrows() = 0;
 
 protected:
 //    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
-//    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
     QGraphicsPixmapItem *m_pixmapItem;
-    QGraphicsTextItem *m_textItem;
+//    QGraphicsTextItem *m_textItem;
+    QList<Arrow *> arrows;
 
 private:
     DiagramType myDiagramType;
