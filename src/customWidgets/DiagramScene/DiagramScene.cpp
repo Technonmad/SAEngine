@@ -1,13 +1,14 @@
 #include "DiagramScene.h"
 #include <QTextCursor>
 #include "Arrow/Arrow.h"
+#include "Item/GraphicsItemFactory.h"
 
 DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
-    : QGraphicsScene(parent)
+    : QGraphicsScene(parent), itemFactory(std::make_unique<GraphicsItemFactory>(GraphicsItemFactory()))
 {
     myItemMenu = itemMenu;
     myMode = MoveItem;
-    myItemType = Item::Manager;
+    myItemType = GraphicsItem::Manager;
     line = nullptr;
     myLineColor = Qt::black;
 }
@@ -32,32 +33,22 @@ void DiagramScene::setMode(Mode mode)
     myMode = mode;
 }
 
-void DiagramScene::setItemType(Item::DiagramType type)
+void DiagramScene::setItemType(GraphicsItem::DiagramType type/*Item::DiagramType type*/)
 {
     myItemType = type;
 }
-
-//void DiagramScene::editorLostFocus(DiagramTextItem *item)
-//{
-//    QTextCursor cursor = item->textCursor();
-//    cursor.clearSelection();
-//    item->setTextCursor(cursor);
-
-//    if (item->toPlainText().isEmpty()) {
-//        removeItem(item);
-//        item->deleteLater();
-//    }
-//}
 
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
-    Item *item;
+//    Item *item;
+    GraphicsItem *item;
     switch (myMode) {
         case InsertItem:
-            item = new Item(myItemType, myItemMenu);
+//            item = new Item(myItemType, myItemMenu);
+            item = itemFactory.get()->create(myItemType, myItemMenu);
             addItem(item);
             item->setPos(mouseEvent->scenePos());
             emit itemInserted(item);
@@ -99,12 +90,12 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         delete line;
 
         if ( startItems.count() > 0 && endItems.count() > 0 &&
-            startItems.first()->type() == Item::Type &&
-            endItems.first()->type() == Item::Type &&
+            startItems.first()->type() == GraphicsItem::Type &&
+            endItems.first()->type() == GraphicsItem::Type &&
             startItems.first() != endItems.first() )
         {
-            Item *startItem = qgraphicsitem_cast<Item *>(startItems.first());
-            Item *endItem = qgraphicsitem_cast<Item *>(endItems.first());
+            GraphicsItem *startItem = qgraphicsitem_cast<GraphicsItem *>(startItems.first());
+            GraphicsItem *endItem = qgraphicsitem_cast<GraphicsItem *>(endItems.first());
             Arrow *arrow = new Arrow(startItem, endItem);
             arrow->setColor(myLineColor);
             startItem->addArrow(arrow);

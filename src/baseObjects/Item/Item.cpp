@@ -20,13 +20,13 @@ void Item::removeArrow(Arrow *arrow)
 
 void Item::removeArrows()
 {
-    const auto arrowsCopy = arrows;
-    for (Arrow *arrow : arrowsCopy) {
-        arrow->startItem()->removeArrow(arrow);
-        arrow->endItem()->removeArrow(arrow);
-        scene()->removeItem(arrow);
-        delete arrow;
-    }
+//    const auto arrowsCopy = arrows;
+//    for (Arrow *arrow : arrowsCopy) {
+//        arrow->startItem()->removeArrow(arrow);
+//        arrow->endItem()->removeArrow(arrow);
+//        scene()->removeItem(arrow);
+//        delete arrow;
+//
 }
 
 Item::DiagramType Item::diagramType() const

@@ -6,6 +6,15 @@ include_directories(${Qt6Widgets_INCLUDE_DIRS})
 set(ItemSrc
 	  Item.h
 		Item.cpp
+		GraphicsItem.h
+		GraphicsItem.cpp
+		IGraphicsItemFactory.h
+		GraphicsItemFactory.h
+		GraphicsItemFactory.cpp
+		WarehouseItem.h
+		WarehouseItem.cpp
+		ManagerItem.h
+		ManagerItem.cpp
 )
 
 add_library(Item STATIC ${ItemSrc})
