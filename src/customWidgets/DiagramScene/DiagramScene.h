@@ -5,7 +5,9 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
-#include "Item/Item.h"
+#include <Item/IGraphicsItemFactory.h>
+//#include "Item/Item.h"
+#include "Item/GraphicsItem.h"
 
 class DiagramScene: public QGraphicsScene
 {
@@ -20,11 +22,12 @@ public:
 
 public slots:
     void setMode(Mode mode);
-    void setItemType(Item::DiagramType type);
-//    void editorLostFocus(TextItem *item);
+//    void setItemType(Item::DiagramType type);
+    void setItemType(GraphicsItem::DiagramType type);
 
 signals:
-    void itemInserted(Item *item);
+//    void itemInserted(Item *item);
+    void itemInserted(GraphicsItem *item);
     void itemSelected(QGraphicsItem *item);
 
 protected:
@@ -35,12 +38,14 @@ protected:
 private:
     bool isItemChange(int type) const;
 
-    Item::DiagramType myItemType;
+//    Item::DiagramType myItemType;
+    GraphicsItem::DiagramType myItemType;
     QMenu *myItemMenu;
     QGraphicsLineItem *line;
     Mode myMode;
     bool leftButtonDown;
     QPointF startPoint;
     QColor myLineColor;
+    std::unique_ptr<IGraphicsItemFactory> itemFactory;
 };
 #endif // DIAGRAMSCENE_H
