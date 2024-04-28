@@ -81,9 +81,9 @@ void MainWindow::deleteItem()
     for (QGraphicsItem *item : std::as_const(selectedItems)) {
         if (item->type() == Arrow::Type) {
             scene->removeItem(item);
-//            Arrow *arrow = qgraphicsitem_cast<Arrow *>(item);
-//            arrow->startItem()->removeArrow(arrow);
-//            arrow->endItem()->removeArrow(arrow);
+            Arrow *arrow = qgraphicsitem_cast<Arrow *>(item);
+            arrow->startItem()->removeArrow(arrow);
+            arrow->endItem()->removeArrow(arrow);
             delete item;
         }
     }
