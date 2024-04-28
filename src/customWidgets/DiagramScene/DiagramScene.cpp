@@ -38,18 +38,6 @@ void DiagramScene::setItemType(GraphicsItem::DiagramType type/*Item::DiagramType
     myItemType = type;
 }
 
-//void DiagramScene::editorLostFocus(DiagramTextItem *item)
-//{
-//    QTextCursor cursor = item->textCursor();
-//    cursor.clearSelection();
-//    item->setTextCursor(cursor);
-
-//    if (item->toPlainText().isEmpty()) {
-//        removeItem(item);
-//        item->deleteLater();
-//    }
-//}
-
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() != Qt::LeftButton)
@@ -88,38 +76,38 @@ void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
-//void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
-//{
-//    if (line != nullptr && myMode == InsertLine) {
-//        QList<QGraphicsItem *> startItems = items(line->line().p1());
-//        if (startItems.count() && startItems.first() == line)
-//            startItems.removeFirst();
-//        QList<QGraphicsItem *> endItems = items(line->line().p2());
-//        if (endItems.count() && endItems.first() == line)
-//            endItems.removeFirst();
+void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    if (line != nullptr && myMode == InsertLine) {
+        QList<QGraphicsItem *> startItems = items(line->line().p1());
+        if (startItems.count() && startItems.first() == line)
+            startItems.removeFirst();
+        QList<QGraphicsItem *> endItems = items(line->line().p2());
+        if (endItems.count() && endItems.first() == line)
+            endItems.removeFirst();
 
-//        removeItem(line);
-//        delete line;
+        removeItem(line);
+        delete line;
 
-//        if ( startItems.count() > 0 && endItems.count() > 0 &&
-//            startItems.first()->type() == GraphicsItem::Type &&
-//            endItems.first()->type() == GraphicsItem::Type &&
-//            startItems.first() != endItems.first() )
-//        {
-//            GraphicsItem *startItem = qgraphicsitem_cast<GraphicsItem *>(startItems.first());
-//            GraphicsItem *endItem = qgraphicsitem_cast<GraphicsItem *>(endItems.first());
-//            Arrow *arrow = new Arrow(startItem, endItem);
-//            arrow->setColor(myLineColor);
-//            startItem->addArrow(arrow);
-//            endItem->addArrow(arrow);
-//            arrow->setZValue(-1000.0);
-//            addItem(arrow);
-//            arrow->updatePosition();
-//        }
-//    }
-//    line = nullptr;
-//    QGraphicsScene::mouseReleaseEvent(mouseEvent);
-//}
+        if ( startItems.count() > 0 && endItems.count() > 0 &&
+            startItems.first()->type() == GraphicsItem::Type &&
+            endItems.first()->type() == GraphicsItem::Type &&
+            startItems.first() != endItems.first() )
+        {
+            GraphicsItem *startItem = qgraphicsitem_cast<GraphicsItem *>(startItems.first());
+            GraphicsItem *endItem = qgraphicsitem_cast<GraphicsItem *>(endItems.first());
+            Arrow *arrow = new Arrow(startItem, endItem);
+            arrow->setColor(myLineColor);
+            startItem->addArrow(arrow);
+            endItem->addArrow(arrow);
+            arrow->setZValue(-1000.0);
+            addItem(arrow);
+            arrow->updatePosition();
+        }
+    }
+    line = nullptr;
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
+}
 
 bool DiagramScene::isItemChange(int type) const
 {

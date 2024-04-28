@@ -24,7 +24,6 @@ public slots:
     void setMode(Mode mode);
 //    void setItemType(Item::DiagramType type);
     void setItemType(GraphicsItem::DiagramType type);
-//    void editorLostFocus(TextItem *item);
 
 signals:
 //    void itemInserted(Item *item);
@@ -34,7 +33,7 @@ signals:
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
-//    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
 
 private:
     bool isItemChange(int type) const;
