@@ -9,8 +9,9 @@
 
 class GraphicsItem;
 
-class Arrow: public QGraphicsLineItem
+class Arrow: public QObject, public QGraphicsLineItem
 {
+    Q_OBJECT
 public:
     enum { Type = UserType +4 };
 
@@ -28,6 +29,14 @@ public:
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget = nullptr) override;
+
+signals:
+    void receivedMessage(const QString &message);
+    void sendMessageToStartObject(const QString &message);
+    void sendMessageToEndObject(const QString &message);
+
+public slots:
+    void handleMessage(const QString &message);
 
 private:
     GraphicsItem *myStartItem;

@@ -6,18 +6,24 @@
 
 class Arrow;
 
-class GraphicsItem : public QGraphicsItem
+class GraphicsItem : public QObject, public QGraphicsItem
 {
+    Q_OBJECT
 public:
     enum { Type = UserType + 15 };
     enum DiagramType {
-        Warehouse,
         Manager,
+        AICamera,
+        FireSensor,
+        Firefighters,
+        SecurityPost,
+        AccessControl,
+        Engineers,
+        Managers,
+        Warehouse,
         ProductionLine,
-        MonitoringSystem,
         PackingLine,
-        CarTransfer,
-        Customer
+        Delivery,
     };
 
     GraphicsItem(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent = nullptr);
@@ -26,10 +32,15 @@ public:
 
     QRectF boundingRect() const override = 0;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override = 0;
+    DiagramType diagramType() const;
     virtual void addArrow(Arrow *arrow) = 0;
     virtual int type() const override = 0;
     virtual void removeArrow(Arrow *arrow) = 0;
     virtual void removeArrows() = 0;
+signals:
+    void sendMessage(const QString &message);
+public slots:
+    virtual void receiveMessage(const QString &message) = 0;
 
 protected:
 //    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;

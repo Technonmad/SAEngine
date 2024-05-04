@@ -31,9 +31,18 @@ target_link_libraries(
 )
 
 set(saengine_resource_files
-	  "../../images/agents/arm.png"
-		"../../images/agents/warehouse.png"
-		"../../images/processes/arm.png"
+	  "../../images/agents/cam.png"
+		"../../images/agents/engineers.png"
+		"../../images/agents/accessControl.png"
+		"../../images/agents/firefighter.png"
+		"../../images/agents/fireSensor.png"
+		"../../images/agents/security.png"
+		"../../images/agents/managers.png"
+		"../../images/agents/tecnician.png"
+		"../../images/processes/warehouse.png"
+		"../../images/processes/production.png"
+		"../../images/processes/packaging.png"
+		"../../images/processes/delivery.png"
 		"../../images/backgrounds/background1.png"
 		"../../images/backgrounds/background2.png"
 		"../../images/backgrounds/background3.png"

@@ -1,21 +1,19 @@
 #include "WarehouseItem.h"
 #include "qgraphicsscene.h"
 
+#include <QDateTime>
+
 WarehouseItem::WarehouseItem(QMenu *contextMenu, QGraphicsItem *parent)
     : GraphicsItem(GraphicsItem::Warehouse, contextMenu, parent)
 {
-    QPixmap pixmap(":/images/agents/warehouse.png");
-    m_pixmapItem = new QGraphicsPixmapItem(pixmap);
-//    m_textItem = new QGraphicsTextItem("100");
-
-//    m_pixmapItem->setPos(0, 0);
-//    m_textItem->setPos(0, m_pixmapItem->pixmap().height());
+    QPixmap pixmap(":/images/processes/warehouse.png");
+    QPixmap scaledPixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::FastTransformation);
+    m_pixmapItem = new QGraphicsPixmapItem(scaledPixmap);
 }
 
 WarehouseItem::~WarehouseItem()
 {
     delete m_pixmapItem;
-//    delete m_textItem;
 }
 
 QRectF WarehouseItem::boundingRect() const
@@ -26,7 +24,6 @@ QRectF WarehouseItem::boundingRect() const
 void WarehouseItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     m_pixmapItem->paint(painter, option, widget);
-//    m_textItem->paint(painter, option, widget);
 }
 
 void WarehouseItem::addArrow(Arrow *arrow)
@@ -63,4 +60,11 @@ void WarehouseItem::removeArrows()
         scene()->removeItem(arrow);
         delete arrow;
     }
+}
+
+void WarehouseItem::receiveMessage(const QString &message)
+{
+    qDebug() << message << "\n";
+//    QDateTime currentTime = QDateTime::currentDateTime();
+//    textEdit->append("[ " + currentTime.toString() + " ] " + message);
 }
