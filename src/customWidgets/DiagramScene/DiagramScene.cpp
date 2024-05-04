@@ -8,7 +8,7 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
 {
     myItemMenu = itemMenu;
     myMode = MoveItem;
-    myItemType = GraphicsItem::Manager;
+    myItemType = GraphicsItem::Warehouse;
     line = nullptr;
     myLineColor = Qt::black;
 }
