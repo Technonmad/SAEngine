@@ -10,7 +10,7 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
     myMode = MoveItem;
     myItemType = GraphicsItem::Warehouse;
     line = nullptr;
-    myLineColor = Qt::black;
+    myLineColor = Qt::red;
 }
 
 QColor DiagramScene::lineColor() const

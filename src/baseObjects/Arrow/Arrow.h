@@ -42,6 +42,6 @@ private:
     GraphicsItem *myStartItem;
     GraphicsItem *myEndItem;
     QPolygonF arrowHead;
-    QColor myColor = Qt::black;
+    QColor myColor = Qt::red;
 };
 #endif // ARROW_H

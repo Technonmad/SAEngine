@@ -6,7 +6,7 @@ Arrow::Arrow(GraphicsItem *startItem, GraphicsItem *endItem, QGraphicsItem *pare
     : QGraphicsLineItem(parent), myStartItem(startItem), myEndItem(endItem)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
-    setPen(QPen(myColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    setPen(QPen(myColor, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     QObject::connect(startItem, &GraphicsItem::sendMessage, this, &Arrow::handleMessage);
     QObject::connect(endItem, &GraphicsItem::sendMessage, this, &Arrow::handleMessage);
     QObject::connect(this, &Arrow::sendMessageToStartObject, startItem, &GraphicsItem::receiveMessage);
