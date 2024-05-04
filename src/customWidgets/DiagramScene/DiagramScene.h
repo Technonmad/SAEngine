@@ -7,6 +7,7 @@
 #include <QMenu>
 #include <Item/IGraphicsItemFactory.h>
 #include "Item/GraphicsItem.h"
+#include "qmetaobject.h"
 
 class DiagramScene: public QGraphicsScene
 {

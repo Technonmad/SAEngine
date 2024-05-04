@@ -65,5 +65,4 @@ void AccessControl::removeArrows()
 void AccessControl::receiveMessage(const QString &message)
 {
     qDebug() << message << "\n";
-
 }

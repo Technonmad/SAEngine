@@ -26,6 +26,8 @@ public:
         Tecnician,
     };
 
+    Q_ENUM(DiagramType)
+
     GraphicsItem(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent = nullptr);
 
     virtual ~GraphicsItem(){};

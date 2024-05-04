@@ -16,8 +16,6 @@ MainWindow::MainWindow()
             this, &MainWindow::itemInserted);
     connect(scene, &DiagramScene::messageSent,
             this, &MainWindow::messageFromItem);
-//    connect(scene, &DiagramScene::itemSelected,
-//            this, &MainWindow::itemSelected);
     createToolBars();
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -173,7 +171,7 @@ void MainWindow::lineButtonTriggered()
 void MainWindow::messageFromItem(const QString &message)
 {
     QDateTime currentTime = QDateTime::currentDateTime();
-    textEdit->append("[ " + currentTime.toString() + " ] " + message);
+    textEdit->append("[ " + currentTime.time().toString() + " ] " + message);
 }
 
 void MainWindow::about()
@@ -181,11 +179,6 @@ void MainWindow::about()
     QMessageBox::about(this, tr("About SAEngine"),
                        tr("SAEngine is a virtual laboratory for testing and prototyping multiagent systems."));
 }
-
-//void MainWindow::itemSelected(QGraphicsItem *item)
-//{
-
-//}
 
 void MainWindow::createToolBox()
 {
@@ -373,9 +366,6 @@ QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QStri
 
 QWidget *MainWindow::createCellWidget(const QString &text, GraphicsItem::DiagramType type, const QString &image)
 {
-//    GraphicsItem item(type, itemMenu);
-//    QIcon icon(item.image());
-
     QToolButton *button = new QToolButton;
     button->setIcon(QIcon(image));
     button->setIconSize(QSize(50,50));

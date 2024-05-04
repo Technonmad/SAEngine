@@ -108,7 +108,8 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             arrow->setZValue(-1000.0);
             addItem(arrow);
             arrow->updatePosition();
-            emit startItem->sendMessage("Я работаю!");
+            QString typeName = QVariant::fromValue(myItemType).value<QString>();
+            emit startItem->sendMessage(typeName + " : Я работаю!");
         }
     }
     line = nullptr;
