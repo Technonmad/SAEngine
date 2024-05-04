@@ -23,4 +23,15 @@ target_link_libraries(
 	  GraphicsItem PRIVATE
 		Arrow
 		Warehouse
+		AccessControl
+		Cam
+		Engineers
+		Firefighters
+		FireSensor
+		Managers
+		Security
+		Tecnician
+		Delivery
+		Packaging
+		Production
 )
