@@ -193,7 +193,7 @@ void MainWindow::createToolBox()
     layout->addWidget(createCellWidget(tr("Access control"), GraphicsItem::AccessControl, ":/images/agents/accessControl.png"), 2, 0);
     layout->addWidget(createCellWidget(tr("Engineers"), GraphicsItem::Engineers, ":/images/agents/engineers.png"), 2, 1);
     layout->addWidget(createCellWidget(tr("Managers"), GraphicsItem::Managers, ":/images/agents/managers.png"), 3, 0);
-    layout->addWidget(createCellWidget(tr("Tecnician"), GraphicsItem::Managers, ":/images/agents/tecnician.png"), 3, 0);
+    layout->addWidget(createCellWidget(tr("Tecnician"), GraphicsItem::Tecnician, ":/images/agents/tecnician.png"), 3, 1);
 
     layout->setRowStretch(4, 10);
     layout->setColumnStretch(2, 10);
@@ -226,6 +226,8 @@ void MainWindow::createToolBox()
                                                            ":/images/backgrounds/background1.png"), 0, 0);
     backgroundLayout->addWidget(createBackgroundCellWidget(tr("Gray Grid"),
                                                            ":/images/backgrounds/background2.png"), 0, 1);
+    backgroundLayout->addWidget(createBackgroundCellWidget(tr("White Background"),
+                                                           ":/images/backgrounds/background3.png"), 1, 0);
 
     backgroundLayout->setRowStretch(2, 10);
     backgroundLayout->setColumnStretch(2, 10);
@@ -293,10 +295,10 @@ void MainWindow::createToolBars()
 
     lineColorToolButton = new QToolButton;
     lineColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    lineColorToolButton->setMenu(createColorMenu(SLOT(lineColorChanged()), Qt::black));
+    lineColorToolButton->setMenu(createColorMenu(SLOT(lineColorChanged()), Qt::red));
     lineAction = lineColorToolButton->menu()->defaultAction();
     lineColorToolButton->setIcon(createColorToolButtonIcon(
-                                     ":/images/toolbar/lineColor.png", Qt::black));
+                                     ":/images/toolbar/lineColor.png", Qt::red));
     connect(lineColorToolButton, &QAbstractButton::clicked,
             this, &MainWindow::lineButtonTriggered);
 
