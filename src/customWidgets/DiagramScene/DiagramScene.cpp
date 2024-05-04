@@ -103,6 +103,7 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             arrow->setZValue(-1000.0);
             addItem(arrow);
             arrow->updatePosition();
+            emit startItem->sendMessage("Я работаю!");
         }
     }
     line = nullptr;

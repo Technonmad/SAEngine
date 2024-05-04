@@ -1,13 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <Item/Item.h>
 #include <QAbstractButton>
 #include <QAction>
 #include <QComboBox>
 #include <QToolBox>
 #include <QToolButton>
 #include <QMainWindow>
+#include <QTextEdit>
 #include <DiagramScene/DiagramScene.h>
 
 
@@ -32,7 +32,7 @@ private slots:
     void pointerGroupClicked();
     void bringToFront();
     void sendToBack();
-    void itemInserted(Item *item);
+    void itemInserted(GraphicsItem *item);
     void sceneScaleChanged(const QString &scale);
 //    void itemColorChanged();
     void lineColorChanged();
@@ -45,10 +45,11 @@ private:
     void createActions();
     void createMenus();
     void createToolBars();
+    void createTextBox();
     QWidget *createBackgroundCellWidget(const QString &text,
                                         const QString &image);
     QWidget *createCellWidget(const QString &text,
-                              Item::DiagramType type,
+                              GraphicsItem::DiagramType type,
                               const QString &image);
 
     QMenu *createColorMenu(const char *slot, QColor defaultColor);
@@ -74,6 +75,8 @@ private:
     QToolBar *editToolBar;
     QToolBar *colorToolBar;
     QToolBar *pointerToolBar;
+
+    QTextEdit *textEdit;
 
     QComboBox *sceneScaleCombo;
     QComboBox *itemColorCombo;

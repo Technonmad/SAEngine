@@ -6,7 +6,6 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 #include <Item/IGraphicsItemFactory.h>
-//#include "Item/Item.h"
 #include "Item/GraphicsItem.h"
 
 class DiagramScene: public QGraphicsScene
@@ -14,7 +13,7 @@ class DiagramScene: public QGraphicsScene
     Q_OBJECT
 
 public:
-    enum Mode { InsertItem, InsertLine, /*InsertText, */MoveItem };
+    enum Mode { InsertItem, InsertLine, MoveItem };
 
     explicit DiagramScene(QMenu *itemMenu, QObject *parent = nullptr);
     QColor lineColor() const;
@@ -26,7 +25,6 @@ public slots:
     void setItemType(GraphicsItem::DiagramType type);
 
 signals:
-//    void itemInserted(Item *item);
     void itemInserted(GraphicsItem *item);
     void itemSelected(QGraphicsItem *item);
 
@@ -38,7 +36,6 @@ protected:
 private:
     bool isItemChange(int type) const;
 
-//    Item::DiagramType myItemType;
     GraphicsItem::DiagramType myItemType;
     QMenu *myItemMenu;
     QGraphicsLineItem *line;

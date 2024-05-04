@@ -40,3 +40,8 @@ void ManagerItem::removeArrows()
 {
 
 }
+
+void ManagerItem::receiveMessage(const QString &message)
+{
+
+}
