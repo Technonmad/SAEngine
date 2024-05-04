@@ -65,6 +65,5 @@ void AccessControl::removeArrows()
 void AccessControl::receiveMessage(const QString &message)
 {
     qDebug() << message << "\n";
-//    QDateTime currentTime = QDateTime::currentDateTime();
-//    textEdit->append("[ " + currentTime.toString() + " ] " + message);
+
 }
