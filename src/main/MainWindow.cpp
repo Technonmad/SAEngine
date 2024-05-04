@@ -8,11 +8,12 @@ MainWindow::MainWindow()
     createActions();
     createToolBox();
     createMenus();
+    createTextBox();
 
     scene = new DiagramScene(itemMenu, this);
-    scene->setSceneRect(QRectF(0, 0, 5000, 5000));
-//    connect(scene, &DiagramScene::itemInserted,
-//            this, &MainWindow::itemInserted);
+    scene->setSceneRect(QRectF(0, 0, 1000, 1000));
+    connect(scene, &DiagramScene::itemInserted,
+            this, &MainWindow::itemInserted);
 //    connect(scene, &DiagramScene::itemSelected,
 //            this, &MainWindow::itemSelected);
     createToolBars();
@@ -20,7 +21,8 @@ MainWindow::MainWindow()
     QHBoxLayout *layout = new QHBoxLayout;
     layout->addWidget(toolBox);
     view = new QGraphicsView(scene);
-    layout->addWidget(view);
+    layout->addWidget(view, 4);
+    layout->addWidget(textEdit, 1);
 
     QWidget *widget = new QWidget;
     widget->setLayout(layout);
@@ -90,8 +92,8 @@ void MainWindow::deleteItem()
 
     selectedItems = scene->selectedItems();
     for (QGraphicsItem *item : std::as_const(selectedItems)) {
-        if (item->type() == Item::Type)
-            qgraphicsitem_cast<Item *>(item)->removeArrows();
+        if (item->type() == GraphicsItem::Type)
+            qgraphicsitem_cast<GraphicsItem *>(item)->removeArrows();
         scene->removeItem(item);
         delete item;
     }
@@ -112,7 +114,7 @@ void MainWindow::bringToFront()
 
     qreal zValue = 0;
     for (const QGraphicsItem *item : overlapItems) {
-        if (item->zValue() >= zValue && item->type() == Item::Type)
+        if (item->zValue() >= zValue && item->type() == GraphicsItem::Type)
             zValue = item->zValue() + 0.1;
     }
 
@@ -129,14 +131,14 @@ void MainWindow::sendToBack()
 
     qreal zValue = 0;
     for (const QGraphicsItem *item : overlapItems) {
-        if (item->zValue() >= zValue && item->type() == Item::Type)
+        if (item->zValue() >= zValue && item->type() == GraphicsItem::Type)
             zValue = item->zValue() - 0.1;
     }
 
     selectedItem->setZValue(zValue);
 }
 
-void MainWindow::itemInserted(Item *item)
+void MainWindow::itemInserted(GraphicsItem *item)
 {
     pointerTypeGroup->button(int(DiagramScene::MoveItem))->setChecked(true);
     scene->setMode(DiagramScene::Mode(pointerTypeGroup->checkedId()));
@@ -151,15 +153,6 @@ void MainWindow::sceneScaleChanged(const QString &scale)
     view->translate(oldMatrix.dx(), oldMatrix.dy());
     view->scale(newScale, newScale);
 }
-
-//void MainWindow::itemColorChanged()
-//{
-//    fillAction = qobject_cast<QAction *>(sender());
-//    fillColorToolButton->setIcon(createColorToolButtonIcon(
-//                                     "",
-//                                     qvariant_cast<QColor>(fillAction->data())));
-//    fillButtonTriggered();
-//}
 
 void MainWindow::lineColorChanged()
 {
@@ -186,11 +179,6 @@ void MainWindow::about()
 
 //}
 
-//void MainWindow::fillButtonTriggered()
-//{
-//	scene->setItemColor(qvariant_cast<QColor>(fillAction->data()));
-//}
-
 void MainWindow::createToolBox()
 {
     buttonGroup = new QButtonGroup(this);
@@ -198,12 +186,16 @@ void MainWindow::createToolBox()
     connect(buttonGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
             this, &MainWindow::buttonGroupClicked);
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(createCellWidget(tr("test1"), Item::Manager, ":/images/agents/arm.png"), 0, 0);
-    layout->addWidget(createCellWidget(tr("test2"), Item::Customer, ":/images/agents/arm.png"), 0, 1);
-    layout->addWidget(createCellWidget(tr("test1"), Item::Manager, ":/images/agents/arm.png"), 1, 0);
-    layout->addWidget(createCellWidget(tr("test1"), Item::Manager, ":/images/agents/arm.png"), 1, 1);
+    layout->addWidget(createCellWidget(tr("AICamera"), GraphicsItem::AICamera, ":/images/agents/cam.png"), 0, 0);
+    layout->addWidget(createCellWidget(tr("Fire sensor"), GraphicsItem::FireSensor, ":/images/agents/fireSensor.png"), 0, 1);
+    layout->addWidget(createCellWidget(tr("Firefighters"), GraphicsItem::Firefighters, ":/images/agents/firefighter.png"), 1, 0);
+    layout->addWidget(createCellWidget(tr("Security"), GraphicsItem::SecurityPost, ":/images/agents/security.png"), 1, 1);
+    layout->addWidget(createCellWidget(tr("Access control"), GraphicsItem::AccessControl, ":/images/agents/accessControl.png"), 2, 0);
+    layout->addWidget(createCellWidget(tr("Engineers"), GraphicsItem::Engineers, ":/images/agents/engineers.png"), 2, 1);
+    layout->addWidget(createCellWidget(tr("Managers"), GraphicsItem::Managers, ":/images/agents/managers.png"), 3, 0);
+    layout->addWidget(createCellWidget(tr("Tecnician"), GraphicsItem::Managers, ":/images/agents/tecnician.png"), 3, 0);
 
-    layout->setRowStretch(3, 10);
+    layout->setRowStretch(4, 10);
     layout->setColumnStretch(2, 10);
 
     QWidget *itemWidget = new QWidget;
@@ -214,10 +206,10 @@ void MainWindow::createToolBox()
     connect(processGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
             this, &MainWindow::processGroupClicked);
     QGridLayout *processLayout = new QGridLayout;
-    processLayout->addWidget(createCellWidget(tr("test1"), Item::Warehouse, ":/images/agents/warehouse.png"), 0, 0);
-    processLayout->addWidget(createCellWidget(tr("test2"), Item::ProductionLine, ":/images/agents/arm.png"), 0, 1);
-    processLayout->addWidget(createCellWidget(tr("test1"), Item::PackingLine, ":/images/agents/warehouse.png"), 1, 0);
-    processLayout->addWidget(createCellWidget(tr("test2"), Item::ProductionLine, ":/images/agents/arm.png"), 1, 1);
+    processLayout->addWidget(createCellWidget(tr("Storing"), GraphicsItem::Warehouse, ":/images/processes/warehouse.png"), 0, 0);
+    processLayout->addWidget(createCellWidget(tr("Production"), GraphicsItem::ProductionLine, ":/images/processes/production.png"), 0, 1);
+    processLayout->addWidget(createCellWidget(tr("Packaging"), GraphicsItem::PackingLine, ":/images/processes/packaging.png"), 1, 0);
+    processLayout->addWidget(createCellWidget(tr("Delivery"), GraphicsItem::Delivery, ":/images/processes/delivery.png"), 1, 1);
 
     processLayout->setRowStretch(3, 10);
     processLayout->setColumnStretch(2, 10);
@@ -340,6 +332,15 @@ void MainWindow::createToolBars()
     pointerToolBar->addWidget(sceneScaleCombo);
 }
 
+void MainWindow::createTextBox()
+{
+    textEdit = new QTextEdit;
+    textEdit->setOverwriteMode(false);
+    textEdit->setPlaceholderText("Здесь находится чат агентов");
+    textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
+    textEdit->setStyleSheet("QTextEdit { font-size: 14pt; }");
+}
+
 QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QString &image)
 {
     QToolButton *button = new QToolButton;
@@ -359,9 +360,9 @@ QWidget *MainWindow::createBackgroundCellWidget(const QString &text, const QStri
     return widget;
 }
 
-QWidget *MainWindow::createCellWidget(const QString &text, Item::DiagramType type, const QString &image)
+QWidget *MainWindow::createCellWidget(const QString &text, GraphicsItem::DiagramType type, const QString &image)
 {
-    Item item(type, itemMenu);
+//    GraphicsItem item(type, itemMenu);
 //    QIcon icon(item.image());
 
     QToolButton *button = new QToolButton;
