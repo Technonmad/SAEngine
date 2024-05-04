@@ -7,6 +7,10 @@ Arrow::Arrow(GraphicsItem *startItem, GraphicsItem *endItem, QGraphicsItem *pare
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setPen(QPen(myColor, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    QObject::connect(startItem, &GraphicsItem::sendMessage, this, &Arrow::handleMessage);
+    QObject::connect(endItem, &GraphicsItem::sendMessage, this, &Arrow::handleMessage);
+    QObject::connect(this, &Arrow::sendMessageToStartObject, startItem, &GraphicsItem::receiveMessage);
+    QObject::connect(this, &Arrow::sendMessageToEndObject, endItem, &GraphicsItem::receiveMessage);
 }
 
 int Arrow::type() const
@@ -92,4 +96,9 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
 
 
+}
+
+void Arrow::handleMessage(const QString &message)
+{
+    emit sendMessageToEndObject(message);
 }
