@@ -12,7 +12,6 @@ class GraphicsItem : public QObject, public QGraphicsItem
 public:
     enum { Type = UserType + 15 };
     enum DiagramType {
-        Manager,
         AICamera,
         FireSensor,
         Firefighters,
@@ -24,6 +23,7 @@ public:
         ProductionLine,
         PackingLine,
         Delivery,
+        Tecnician,
     };
 
     GraphicsItem(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent = nullptr);
