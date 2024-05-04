@@ -1,10 +1,10 @@
 #ifndef WAREHOUSEITEM_H
 #define WAREHOUSEITEM_H
 
-#include "GraphicsItem.h"
 #include "Arrow/Arrow.h"
 #include <QTextEdit>
 #include <QVariant>
+#include <Item/GraphicsItem.h>
 
 class WarehouseItem : public GraphicsItem
 {

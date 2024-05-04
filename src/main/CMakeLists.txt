@@ -26,7 +26,7 @@ target_link_libraries(
 		Qt6::Core
 		Qt6::Gui
     Qt6::Widgets
-		Item
+		GraphicsItem
 		DiagramScene
 )
 

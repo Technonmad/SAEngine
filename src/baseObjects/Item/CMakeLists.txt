@@ -5,27 +5,22 @@ include_directories(${Qt6Widgets_INCLUDE_DIRS})
 
 set(CMAKE_AUTOMOC ON)
 
-set(ItemSrc
-	  Item.h
-		Item.cpp
-		GraphicsItem.h
+set(GraphicsItemSrc
+	  GraphicsItem.h
 		GraphicsItem.cpp
-		IGraphicsItemFactory.h
-		GraphicsItemFactory.h
 		GraphicsItemFactory.cpp
-		WarehouseItem.h
-		WarehouseItem.cpp
-		ManagerItem.h
-		ManagerItem.cpp
+		GraphicsItemFactory.h
+		IGraphicsItemFactory.h
 )
 
-add_library(Item STATIC ${ItemSrc})
+add_library(GraphicsItem STATIC ${GraphicsItemSrc})
 
-target_include_directories(Item PUBLIC
+target_include_directories(GraphicsItem PUBLIC
     ../
 )
 
 target_link_libraries(
-	  Item PRIVATE
+	  GraphicsItem PRIVATE
 		Arrow
+		Warehouse
 )
