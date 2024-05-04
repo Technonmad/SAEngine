@@ -10,6 +10,11 @@ GraphicsItem::GraphicsItem(DiagramType diagramType, QMenu *contextMenu, QGraphic
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
 
+GraphicsItem::DiagramType GraphicsItem::diagramType() const
+{
+    return myDiagramType;
+}
+
 //void GraphicsItem::addArrow(Arrow *arrow)
 //{
 //    arrows.append(arrow);
