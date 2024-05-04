@@ -8,6 +8,9 @@
 #include <QToolButton>
 #include <QMainWindow>
 #include <QTextEdit>
+
+#include <Item/GraphicsItem.h>
+
 #include <DiagramScene/DiagramScene.h>
 
 

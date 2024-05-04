@@ -18,7 +18,7 @@ target_include_directories(Arrow PUBLIC
 
 target_link_libraries(
     Arrow PRIVATE
-    Item
+		GraphicsItem
 		Qt6::Core
 		Qt6::Widgets
 )

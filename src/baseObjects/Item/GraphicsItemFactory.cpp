@@ -1,6 +1,5 @@
 #include "GraphicsItemFactory.h"
-#include "ManagerItem.h"
-#include "WarehouseItem.h"
+#include <Storing/WarehouseItem.h>
 
 GraphicsItemFactory::GraphicsItemFactory()
 {
@@ -17,9 +16,6 @@ GraphicsItem *GraphicsItemFactory::create(GraphicsItem::DiagramType diagramType,
     switch (diagramType) {
     case GraphicsItem::Warehouse:
         return new WarehouseItem(contextMenu, parent);
-        break;
-    case GraphicsItem::Manager:
-        return new ManagerItem(contextMenu, parent);
         break;
     default:
         return nullptr;

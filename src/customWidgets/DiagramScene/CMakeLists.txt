@@ -19,6 +19,6 @@ target_include_directories(DiagramScene PUBLIC
 target_link_libraries(
     DiagramScene PRIVATE
 		Qt6::Widgets
-		Item
+		GraphicsItem
 		Arrow
 )
