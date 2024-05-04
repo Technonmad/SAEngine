@@ -23,10 +23,12 @@ public slots:
     void setMode(Mode mode);
 //    void setItemType(Item::DiagramType type);
     void setItemType(GraphicsItem::DiagramType type);
+    void itemMessageHandle(const QString &message);
 
 signals:
     void itemInserted(GraphicsItem *item);
     void itemSelected(QGraphicsItem *item);
+    void messageSent(const QString &message);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
@@ -39,6 +41,7 @@ private:
     GraphicsItem::DiagramType myItemType;
     QMenu *myItemMenu;
     QGraphicsLineItem *line;
+    GraphicsItem *item;
     Mode myMode;
     bool leftButtonDown;
     QPointF startPoint;

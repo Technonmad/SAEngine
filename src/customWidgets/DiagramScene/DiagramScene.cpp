@@ -11,6 +11,7 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
     myItemType = GraphicsItem::Warehouse;
     line = nullptr;
     myLineColor = Qt::red;
+
 }
 
 QColor DiagramScene::lineColor() const
@@ -33,9 +34,14 @@ void DiagramScene::setMode(Mode mode)
     myMode = mode;
 }
 
-void DiagramScene::setItemType(GraphicsItem::DiagramType type/*Item::DiagramType type*/)
+void DiagramScene::setItemType(GraphicsItem::DiagramType type)
 {
     myItemType = type;
+}
+
+void DiagramScene::itemMessageHandle(const QString &message)
+{
+    emit messageSent(" : " + message);
 }
 
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -43,14 +49,13 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
-//    Item *item;
-    GraphicsItem *item;
+//    GraphicsItem *item;
     switch (myMode) {
         case InsertItem:
-//            item = new Item(myItemType, myItemMenu);
             item = itemFactory.get()->create(myItemType, myItemMenu);
             addItem(item);
             item->setPos(mouseEvent->scenePos());
+            QObject::connect(item, &GraphicsItem::sendMessage, this, &DiagramScene::itemMessageHandle);
             emit itemInserted(item);
             break;
         case InsertLine:
