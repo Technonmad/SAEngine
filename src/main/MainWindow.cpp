@@ -14,6 +14,8 @@ MainWindow::MainWindow()
     scene->setSceneRect(QRectF(0, 0, 1000, 1000));
     connect(scene, &DiagramScene::itemInserted,
             this, &MainWindow::itemInserted);
+    connect(scene, &DiagramScene::messageSent,
+            this, &MainWindow::messageFromItem);
 //    connect(scene, &DiagramScene::itemSelected,
 //            this, &MainWindow::itemSelected);
     createToolBars();
@@ -166,6 +168,12 @@ void MainWindow::lineColorChanged()
 void MainWindow::lineButtonTriggered()
 {
     scene->setLineColor(qvariant_cast<QColor>(lineAction->data()));
+}
+
+void MainWindow::messageFromItem(const QString &message)
+{
+    QDateTime currentTime = QDateTime::currentDateTime();
+    textEdit->append("[ " + currentTime.toString() + " ] " + message);
 }
 
 void MainWindow::about()
@@ -338,6 +346,7 @@ void MainWindow::createTextBox()
 {
     textEdit = new QTextEdit;
     textEdit->setOverwriteMode(false);
+    textEdit->setReadOnly(true);
     textEdit->setPlaceholderText("Здесь находится чат агентов");
     textEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
     textEdit->setStyleSheet("QTextEdit { font-size: 14pt; }");

@@ -37,10 +37,9 @@ private slots:
     void sendToBack();
     void itemInserted(GraphicsItem *item);
     void sceneScaleChanged(const QString &scale);
-//    void itemColorChanged();
     void lineColorChanged();
-//    void fillButtonTriggered();
     void lineButtonTriggered();
+    void messageFromItem(const QString &message);
 //    void itemSelected(QGraphicsItem *item);
     void about();
 private:
