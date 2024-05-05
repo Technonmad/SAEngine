@@ -39,9 +39,15 @@ void DiagramScene::setItemType(GraphicsItem::DiagramType type)
     myItemType = type;
 }
 
-void DiagramScene::itemMessageHandle(const QString &message)
+void DiagramScene::itemMessageHandle(GraphicsItem::DiagramEventType event, const QString &message)
 {
-    emit messageSent(" : " + message);
+    QString typeName = QVariant::fromValue(myItemType).value<QString>();
+    emit messageSent(typeName + " : " + message);
+}
+
+void DiagramScene::startAgents()
+{
+    emit wakeUpAgents();
 }
 
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -108,8 +114,8 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             arrow->setZValue(-1000.0);
             addItem(arrow);
             arrow->updatePosition();
-            QString typeName = QVariant::fromValue(myItemType).value<QString>();
-            emit startItem->sendMessage(typeName + " : Я работаю!");
+//            QString typeName = QVariant::fromValue(myItemType).value<QString>();
+//            emit startItem->sendMessage(typeName + " : Я работаю!");
         }
     }
     line = nullptr;

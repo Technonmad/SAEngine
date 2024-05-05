@@ -22,14 +22,15 @@ public:
 
 public slots:
     void setMode(Mode mode);
-//    void setItemType(Item::DiagramType type);
     void setItemType(GraphicsItem::DiagramType type);
-    void itemMessageHandle(const QString &message);
+    void itemMessageHandle(GraphicsItem::DiagramEventType event, const QString &message);
+    void startAgents();
 
 signals:
     void itemInserted(GraphicsItem *item);
     void itemSelected(QGraphicsItem *item);
     void messageSent(const QString &message);
+    void wakeUpAgents();
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) override;
