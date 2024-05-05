@@ -14,10 +14,6 @@ public:
 
     ~Production();
 
-//public:
-//    QGraphicsPixmapItem *m_pixmapItem;
-//    QGraphicsTextItem *m_textItem;
-
 private:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -28,12 +24,21 @@ private:
     void removeArrows() override;
 
 signals:
-    void sendMessage(const QString &message);
+    void sendMessage(DiagramEventType event, const QString &message);
+    void fireEvent();
+    void brakeEvent();
+    void okEvent();
 
 public slots:
-    void receiveMessage(const QString &message) override;
+    void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
+    void wakeUp() override;
+    void startEvents();
+    void onFireEvent();
+    void onBrakeEvent();
+    void onOkEvent();
+
 private:
-//    QList<Arrow *> arrows;
+    QTimer *timer;
 };
 
 #endif // PRODUCTION_H
