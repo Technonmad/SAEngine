@@ -52,6 +52,8 @@ set(saengine_resource_files
 		"../../images/toolbar/remove.png"
 		"../../images/toolbar/toBack.png"
 		"../../images/toolbar/toFront.png"
+		"../../images/toolbar/start.png"
+		"../../images/toolbar/stop.png"
 )
 
 qt_add_resources(SAEngine "SAEngine"
