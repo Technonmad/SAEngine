@@ -25,8 +25,17 @@ public:
         Delivery,
         Tecnician,
     };
+    enum DiagramEventType {
+        FireEvent,
+        BrakeEvent,
+        OkEvent,
+        PackingEvent,
+        RepairEvent,
+        FireOutEvent,
+    };
 
     Q_ENUM(DiagramType)
+    Q_ENUM(DiagramEventType)
 
     GraphicsItem(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent = nullptr);
 
@@ -40,9 +49,10 @@ public:
     virtual void removeArrow(Arrow *arrow) = 0;
     virtual void removeArrows() = 0;
 signals:
-    void sendMessage(const QString &message);
+    void sendMessage(DiagramEventType event,const QString &message);
 public slots:
-    virtual void receiveMessage(const QString &message) = 0;
+    virtual void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) = 0;
+    virtual void wakeUp() = 0;
 
 protected:
 //    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
