@@ -36,7 +36,8 @@ signals:
     void sendMessageToEndObject(const QString &message);
 
 public slots:
-    void handleMessage(const QString &message);
+    void handleMessageFromStartObject(const QString &message);
+    void handleMessageFromEndObject(const QString &message);
 
 private:
     GraphicsItem *myStartItem;
