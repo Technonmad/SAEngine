@@ -2,6 +2,8 @@
 #include "qgraphicsscene.h"
 
 #include <QDateTime>
+#include <QTimer>
+#include <QRandomGenerator>
 
 Packaging::Packaging(QMenu *contextMenu, QGraphicsItem *parent)
     : GraphicsItem(GraphicsItem::Warehouse, contextMenu, parent)
@@ -9,6 +11,10 @@ Packaging::Packaging(QMenu *contextMenu, QGraphicsItem *parent)
     QPixmap pixmap(":/images/processes/packaging.png");
     QPixmap scaledPixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::FastTransformation);
     m_pixmapItem = new QGraphicsPixmapItem(scaledPixmap);
+
+    connect(this, &Packaging::brakeEvent, this, &Packaging::onBrakeEvent);
+    connect(this, &Packaging::fireEvent, this, &Packaging::onFireEvent);
+    connect(this, &Packaging::okEvent, this, &Packaging::onOkEvent);
 }
 
 Packaging::~Packaging()
@@ -62,9 +68,59 @@ void Packaging::removeArrows()
     }
 }
 
-void Packaging::receiveMessage(const QString &message)
+void Packaging::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    qDebug() << message << "\n";
-//    QDateTime currentTime = QDateTime::currentDateTime();
-//    textEdit->append("[ " + currentTime.toString() + " ] " + message);
+    if (senderType == DiagramType::Firefighters && event == DiagramEventType::FireOutEvent){
+        emit okEvent();
+    } else if (senderType == DiagramType::Tecnician && event == DiagramEventType::RepairEvent){
+        emit okEvent();
+    } else if (senderType == DiagramType::ProductionLine
+        && event == DiagramEventType::OkEvent){
+        emit okEvent();
+    } else {
+        return;
+    }
+}
+
+void Packaging::wakeUp()
+{
+    timer = new QTimer(this);
+    timer->setInterval(5000);
+    connect(timer, &QTimer::timeout, this, &Packaging::startEvents);
+    timer->start();
+}
+
+void Packaging::startEvents()
+{
+    int eventNumber = QRandomGenerator::global()->bounded(3) + 1;
+    switch (eventNumber) {
+    case 1:
+        emit brakeEvent();
+        timer->stop();
+        break;
+    case 2:
+        emit okEvent();
+        break;
+    case 3:
+        emit fireEvent();
+        break;
+    default:
+        break;
+    }
+}
+
+void Packaging::onFireEvent()
+{
+    emit sendMessage(DiagramEventType::FireEvent, "У меня пожар!");
+}
+
+void Packaging::onBrakeEvent()
+{
+    emit sendMessage(DiagramEventType::BrakeEvent, "Я сломан");
+}
+
+void Packaging::onOkEvent()
+{
+    emit sendMessage(DiagramEventType::OkEvent, "Упаковываю товар");
+    timer->start();
 }

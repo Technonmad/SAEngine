@@ -28,12 +28,21 @@ private:
     void removeArrows() override;
 
 signals:
-    void sendMessage(const QString &message);
+    void sendMessage(DiagramEventType event, const QString &message);
+    void fireEvent();
+    void brakeEvent();
+    void okEvent();
 
 public slots:
-    void receiveMessage(const QString &message) override;
+    void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
+    void wakeUp() override;
+    void startEvents();
+    void onFireEvent();
+    void onBrakeEvent();
+    void onOkEvent();
+
 private:
-//    QList<Arrow *> arrows;
+    QTimer *timer;
 };
 
 #endif // PACKAGING_H
