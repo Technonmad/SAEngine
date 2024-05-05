@@ -16,6 +16,7 @@ MainWindow::MainWindow()
             this, &MainWindow::itemInserted);
     connect(scene, &DiagramScene::messageSent,
             this, &MainWindow::messageFromItem);
+    connect(this, &MainWindow::startAgents, scene, &DiagramScene::startAgents);
     createToolBars();
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -30,6 +31,8 @@ MainWindow::MainWindow()
     setCentralWidget(widget);
     setWindowTitle("SAEngine");
     setUnifiedTitleAndToolBarOnMac(true);
+
+
 }
 
 void MainWindow::backgroundButtonGroupClicked(QAbstractButton *button)
@@ -168,6 +171,55 @@ void MainWindow::lineButtonTriggered()
     scene->setLineColor(qvariant_cast<QColor>(lineAction->data()));
 }
 
+void MainWindow::startButtonTriggered()
+{
+    editToolBar->setDisabled(true);
+    colorToolBar->setDisabled(true);
+    pointerToolBar->setDisabled(true);
+    startAction->setDisabled(true);
+    toolBox->setDisabled(true);
+    fileMenu->setDisabled(true);
+    itemMenu->setDisabled(true);
+    aboutMenu->setDisabled(true);
+    view->setDisabled(true);
+    stopAction->setDisabled(false);
+
+    timer = new QTimer(this);
+    timer->setInterval(10000);
+    connect(timer, &QTimer::timeout, this,
+            &MainWindow::startModelTriggered);
+    timer->start();
+
+    emit startAgents();
+}
+
+void MainWindow::stopButtonTriggered()
+{
+    editToolBar->setDisabled(false);
+    colorToolBar->setDisabled(false);
+    pointerToolBar->setDisabled(false);
+    startAction->setDisabled(false);
+    toolBox->setDisabled(false);
+    fileMenu->setDisabled(false);
+    itemMenu->setDisabled(false);
+    aboutMenu->setDisabled(false);
+    view->setDisabled(false);
+    stopAction->setDisabled(true);
+
+    timer->stop();
+}
+
+void MainWindow::startModelTriggered()
+{
+    int eventNumber = QRandomGenerator::global()->bounded(10) + 1;
+    qDebug() << "Число: " << eventNumber;
+}
+
+void MainWindow::stopModelTriggered()
+{
+
+}
+
 void MainWindow::messageFromItem(const QString &message)
 {
     QDateTime currentTime = QDateTime::currentDateTime();
@@ -261,6 +313,19 @@ void MainWindow::createActions()
     deleteAction->setStatusTip(tr("Delete item from diagram"));
     connect(deleteAction, &QAction::triggered, this, &MainWindow::deleteItem);
 
+    startAction = new QAction(QIcon(":/images/toolbar/start.png"),
+                              tr("&Start"), this);
+    startAction->setStatusTip(tr("Start model"));
+    connect(startAction, &QAction::triggered, this, &MainWindow::startButtonTriggered);
+    // TODO: сделать действие
+
+    stopAction = new QAction(QIcon(":/images/toolbar/stop.png"),
+                              tr("&Stop"), this);
+    stopAction->setStatusTip(tr("Stop model"));
+    stopAction->setDisabled(true);
+    connect(stopAction, &QAction::triggered, this, &MainWindow::stopButtonTriggered);
+    // TODO: сделать действие
+
     exitAction = new QAction(tr("E&xit"), this);
     exitAction->setShortcuts(QKeySequence::Quit);
     exitAction->setStatusTip(tr("Quit SAEngine"));
@@ -282,6 +347,10 @@ void MainWindow::createMenus()
     itemMenu->addSeparator();
     itemMenu->addAction(toFrontAction);
     itemMenu->addAction(sendBackAction);
+
+    modelMenu = menuBar()->addMenu(tr("&Model"));
+    modelMenu->addAction(startAction);
+    modelMenu->addAction(stopAction);
 
     aboutMenu = menuBar()->addMenu(tr("&Help"));
     aboutMenu->addAction(aboutAction);
@@ -333,6 +402,10 @@ void MainWindow::createToolBars()
     pointerToolBar->addWidget(pointerButton);
     pointerToolBar->addWidget(linePointerButton);
     pointerToolBar->addWidget(sceneScaleCombo);
+
+    startToolBar = addToolBar(tr("Start type"));
+    startToolBar->addAction(startAction);
+    startToolBar->addAction(stopAction);
 }
 
 void MainWindow::createTextBox()

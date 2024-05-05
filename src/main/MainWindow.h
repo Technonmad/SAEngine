@@ -27,6 +27,11 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
 
+signals:
+    void startModel();
+    void stopModel();
+    void startAgents();
+
 private slots:
     void backgroundButtonGroupClicked(QAbstractButton *button);
     void buttonGroupClicked(QAbstractButton *button);
@@ -39,6 +44,10 @@ private slots:
     void sceneScaleChanged(const QString &scale);
     void lineColorChanged();
     void lineButtonTriggered();
+    void startButtonTriggered();
+    void stopButtonTriggered();
+    void startModelTriggered();
+    void stopModelTriggered();
     void messageFromItem(const QString &message);
 //    void itemSelected(QGraphicsItem *item);
     void about();
@@ -65,6 +74,8 @@ private:
     QAction *saveAction;
     QAction *addAction;
     QAction *deleteAction;
+    QAction *startAction;
+    QAction *stopAction;
 
     QAction *toFrontAction;
     QAction *sendBackAction;
@@ -73,10 +84,12 @@ private:
     QMenu *fileMenu;
     QMenu *itemMenu;
     QMenu *aboutMenu;
+    QMenu *modelMenu;
 
     QToolBar *editToolBar;
     QToolBar *colorToolBar;
     QToolBar *pointerToolBar;
+    QToolBar *startToolBar;
 
     QTextEdit *textEdit;
 
@@ -92,5 +105,7 @@ private:
     QToolButton *lineColorToolButton;
     QAction *fillAction;
     QAction *lineAction;
+
+    QTimer *timer;
 };
 #endif // MAINWINDOW_H
