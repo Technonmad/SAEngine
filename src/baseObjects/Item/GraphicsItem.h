@@ -12,19 +12,40 @@ class GraphicsItem : public QObject, public QGraphicsItem
 public:
     enum { Type = UserType + 15 };
     enum DiagramType {
-        Manager,
-        AICamera,
         FireSensor,
         Firefighters,
-        SecurityPost,
-        AccessControl,
-        Engineers,
         Managers,
         Warehouse,
         ProductionLine,
-        PackingLine,
         Delivery,
+        Tecnician,
     };
+    enum DiagramEventType {
+        FireEvent,
+        BrakeEvent,
+        ProcessStartEvent,
+        ProcessContinueEvent,
+        ProcessEndEvent,
+        RepairEvent,
+        FireOutEvent,
+        StartDeliveryEvent,
+        ContinueDeliveryEvent,
+        EndDeliveryEvent,
+        DeliveryIsHereEvent,
+        DeliveryIsOutEvent,
+        DeliveryIsWaiting,
+        StartEvent,
+    };
+    enum DiagramAgentState {
+        Working,
+        Stopped,
+        SendingToDeliver,
+        Delivering,
+    };
+
+    Q_ENUM(DiagramType)
+    Q_ENUM(DiagramEventType)
+    Q_ENUM(DiagramAgentState)
 
     GraphicsItem(DiagramType diagramType, QMenu *contextMenu, QGraphicsItem *parent = nullptr);
 
@@ -37,10 +58,13 @@ public:
     virtual int type() const override = 0;
     virtual void removeArrow(Arrow *arrow) = 0;
     virtual void removeArrows() = 0;
+    virtual void wakeUp() = 0;
+    virtual void pauseAgents() = 0;
+    virtual void continueAgents() = 0;
 signals:
-    void sendMessage(const QString &message);
+    void sendMessage(DiagramType type, DiagramEventType event,const QString &message);
 public slots:
-    virtual void receiveMessage(const QString &message) = 0;
+    virtual void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) = 0;
 
 protected:
 //    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;

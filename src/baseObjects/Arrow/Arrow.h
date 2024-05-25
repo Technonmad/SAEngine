@@ -7,6 +7,8 @@
 #include <QPen>
 #include <QPainter>
 
+#include <Item/GraphicsItem.h>
+
 class GraphicsItem;
 
 class Arrow: public QObject, public QGraphicsLineItem
@@ -32,16 +34,21 @@ protected:
 
 signals:
     void receivedMessage(const QString &message);
-    void sendMessageToStartObject(const QString &message);
-    void sendMessageToEndObject(const QString &message);
+    void sendMessageToStartObject(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event,
+                                  const QString &message);
+    void sendMessageToEndObject(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event,
+                                const QString &message);
 
 public slots:
-    void handleMessage(const QString &message);
+    void handleMessageFromStartObject(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event,
+                                      const QString &message);
+    void handleMessageFromEndObject(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event,
+                                    const QString &message);
 
 private:
     GraphicsItem *myStartItem;
     GraphicsItem *myEndItem;
     QPolygonF arrowHead;
-    QColor myColor = Qt::black;
+    QColor myColor = Qt::red;
 };
 #endif // ARROW_H
