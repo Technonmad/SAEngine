@@ -7,7 +7,6 @@
 #include <QMenu>
 #include <Item/IGraphicsItemFactory.h>
 #include "Item/GraphicsItem.h"
-#include "qmetaobject.h"
 
 class DiagramScene: public QGraphicsScene
 {
@@ -23,8 +22,10 @@ public:
 public slots:
     void setMode(Mode mode);
     void setItemType(GraphicsItem::DiagramType type);
-    void itemMessageHandle(GraphicsItem::DiagramEventType event, const QString &message);
+    void itemMessageHandle(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event, const QString &message);
     void startAgents();
+    void pauseAgents();
+    void continueAgents();
 
 signals:
     void itemInserted(GraphicsItem *item);

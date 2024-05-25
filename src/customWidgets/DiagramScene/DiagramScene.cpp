@@ -39,15 +39,41 @@ void DiagramScene::setItemType(GraphicsItem::DiagramType type)
     myItemType = type;
 }
 
-void DiagramScene::itemMessageHandle(GraphicsItem::DiagramEventType event, const QString &message)
+void DiagramScene::itemMessageHandle(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event,
+                                     const QString &message)
 {
-    QString typeName = QVariant::fromValue(myItemType).value<QString>();
+    QString typeName = QVariant::fromValue(type).value<QString>();
     emit messageSent(typeName + " : " + message);
 }
 
 void DiagramScene::startAgents()
 {
-    emit wakeUpAgents();
+    foreach (QGraphicsItem* item, this->items()) {
+        GraphicsItem* graphicsItem = qgraphicsitem_cast<GraphicsItem*>(item);
+        if (graphicsItem != nullptr) {
+            graphicsItem->wakeUp();
+        }
+    }
+}
+
+void DiagramScene::pauseAgents()
+{
+    foreach (QGraphicsItem* item, this->items()) {
+        GraphicsItem* graphicsItem = qgraphicsitem_cast<GraphicsItem*>(item);
+        if (graphicsItem != nullptr) {
+            graphicsItem->pauseAgents();
+        }
+    }
+}
+
+void DiagramScene::continueAgents()
+{
+    foreach (QGraphicsItem* item, this->items()) {
+        GraphicsItem* graphicsItem = qgraphicsitem_cast<GraphicsItem*>(item);
+        if (graphicsItem != nullptr) {
+            graphicsItem->continueAgents();
+        }
+    }
 }
 
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -55,7 +81,6 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
-//    GraphicsItem *item;
     switch (myMode) {
         case InsertItem:
             item = itemFactory.get()->create(myItemType, myItemMenu);
