@@ -1,8 +1,4 @@
-add_subdirectory(AccessControl/)
-add_subdirectory(Cam/)
-add_subdirectory(Engineers/)
 add_subdirectory(Firefighters/)
 add_subdirectory(FireSensor/)
 add_subdirectory(Managers/)
-add_subdirectory(Security/)
 add_subdirectory(Tecnician/)
