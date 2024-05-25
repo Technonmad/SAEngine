@@ -2,13 +2,16 @@
 #include "qgraphicsscene.h"
 
 #include <QDateTime>
+#include <QTimer>
 
 Tecnician::Tecnician(QMenu *contextMenu, QGraphicsItem *parent)
-    : GraphicsItem(GraphicsItem::Warehouse, contextMenu, parent)
+    : GraphicsItem(GraphicsItem::Tecnician, contextMenu, parent)
 {
     QPixmap pixmap(":/images/agents/tecnician.png");
     QPixmap scaledPixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::FastTransformation);
     m_pixmapItem = new QGraphicsPixmapItem(scaledPixmap);
+
+    connect(this, &Tecnician::startProcessEvent, this, &Tecnician::onStartProcessEvent);
 }
 
 Tecnician::~Tecnician()
@@ -62,9 +65,48 @@ void Tecnician::removeArrows()
     }
 }
 
-void Tecnician::receiveMessage(const QString &message)
+void Tecnician::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    qDebug() << message << "\n";
-//    QDateTime currentTime = QDateTime::currentDateTime();
-//    textEdit->append("[ " + currentTime.toString() + " ] " + message);
+    if (event == DiagramEventType::BrakeEvent){
+        emit startProcessEvent();
+    } else {
+        return;
+    }
+}
+
+void Tecnician::wakeUp()
+{
+    emit sendMessage(diagramType(), DiagramEventType::StartEvent, "Начинаю работу");
+    processTimer = new QTimer(this);
+    processTimer->setInterval(7000);
+
+    state = DiagramAgentState::Stopped;
+
+}
+
+void Tecnician::pauseAgents()
+{
+    oldProcessState = processTimer->isActive();
+    processTimer->stop();
+}
+
+void Tecnician::continueAgents()
+{
+    if (oldProcessState)
+        processTimer->start();
+}
+
+void Tecnician::onStartProcessEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::ProcessStartEvent, "Чиним...");
+    state = DiagramAgentState::Working;
+
+    connect(processTimer, &QTimer::timeout, this, &Tecnician::onEndProcessEvent);
+    processTimer->start();
+}
+
+void Tecnician::onEndProcessEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::RepairEvent, "Починили");
+    processTimer->stop();
 }

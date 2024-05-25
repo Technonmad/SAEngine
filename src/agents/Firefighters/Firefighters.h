@@ -14,10 +14,6 @@ public:
 
     ~Firefighters();
 
-//public:
-//    QGraphicsPixmapItem *m_pixmapItem;
-//    QGraphicsTextItem *m_textItem;
-
 private:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -27,13 +23,26 @@ private:
     void removeArrow(Arrow *arrow) override;
     void removeArrows() override;
 
+public:
+    void wakeUp() override;
+    void pauseAgents() override;
+    void continueAgents() override;
+
 signals:
-    void sendMessage(const QString &message);
+    void startProcessEvent();
+    void endProcessEvent();
 
 public slots:
-    void receiveMessage(const QString &message) override;
+    void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
+    void onStartProcessEvent();
+    void onEndProcessEvent();
+
 private:
-//    QList<Arrow *> arrows;
+    QTimer *processTimer;
+    bool oldProcessState;
+
+public:
+    DiagramAgentState state;
 };
 
 #endif // FIREFIGHTERS_H

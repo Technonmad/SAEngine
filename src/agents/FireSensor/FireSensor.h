@@ -14,10 +14,6 @@ public:
 
     ~Firesensor();
 
-//public:
-//    QGraphicsPixmapItem *m_pixmapItem;
-//    QGraphicsTextItem *m_textItem;
-
 private:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -27,13 +23,16 @@ private:
     void removeArrow(Arrow *arrow) override;
     void removeArrows() override;
 
-signals:
-    void sendMessage(const QString &message);
+public:
+    void wakeUp() override;
+    void pauseAgents() override;
+    void continueAgents() override;
 
 public slots:
-    void receiveMessage(const QString &message) override;
-private:
-//    QList<Arrow *> arrows;
+    void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
+
+public:
+    DiagramAgentState state;
 };
 
 #endif // FIRESENSOR_H

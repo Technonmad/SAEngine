@@ -14,10 +14,6 @@ public:
 
     ~WarehouseItem();
 
-//public:
-//    QGraphicsPixmapItem *m_pixmapItem;
-//    QGraphicsTextItem *m_textItem;
-
 private:
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
@@ -27,13 +23,40 @@ private:
     void removeArrow(Arrow *arrow) override;
     void removeArrows() override;
 
+public:
+    void wakeUp() override;
+    void pauseAgents() override;
+    void continueAgents() override;
+
 signals:
-    void sendMessage(const QString &message);
+//    void sendMessage(DiagramEventType event, const QString &message);
+    void fireEvent();
+    void startProcessEvent();
+    void continueProcessEvent();
+    void endProcessEvent();
+    void startDeliveringEvent();
+    void continueDeliveringEvent();
+    void endDeliveringEvent();
 
 public slots:
-    void receiveMessage(const QString &message) override;
+    void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
+    void startEvents();
+    void onFireEvent();
+    void onStartProcessEvent();
+    void onEndProcessEvent();
+    void onContinueProcessEvent();
+    void onStartDeliveringEvent();
+    void onContinueDeliveringEvent();
+    void onEndDeliveringEvent();
+
 private:
-//    QList<Arrow *> arrows;
+    QTimer *eventTimer;
+    QTimer *processTimer;
+    bool oldProcessState;
+    bool oldEventState;
+
+public:
+    DiagramAgentState state;
 };
 
 #endif // WAREHOUSEITEM_H

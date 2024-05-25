@@ -2,13 +2,16 @@
 #include "qgraphicsscene.h"
 
 #include <QDateTime>
+#include <QTimer>
 
 Firefighters::Firefighters(QMenu *contextMenu, QGraphicsItem *parent)
-    : GraphicsItem(GraphicsItem::Warehouse, contextMenu, parent)
+    : GraphicsItem(GraphicsItem::Firefighters, contextMenu, parent)
 {
     QPixmap pixmap(":/images/agents/firefighter.png");
     QPixmap scaledPixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::FastTransformation);
     m_pixmapItem = new QGraphicsPixmapItem(scaledPixmap);
+
+    connect(this, &Firefighters::startProcessEvent, this, &Firefighters::onStartProcessEvent);
 }
 
 Firefighters::~Firefighters()
@@ -62,9 +65,47 @@ void Firefighters::removeArrows()
     }
 }
 
-void Firefighters::receiveMessage(const QString &message)
+void Firefighters::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    qDebug() << message << "\n";
-//    QDateTime currentTime = QDateTime::currentDateTime();
-//    textEdit->append("[ " + currentTime.toString() + " ] " + message);
+    if (event == DiagramEventType::FireOutEvent){
+        emit startProcessEvent();
+    } else {
+        return;
+    }
+}
+
+void Firefighters::wakeUp()
+{
+    emit sendMessage(diagramType(), DiagramEventType::StartEvent, "Начинаю работу");
+    processTimer = new QTimer(this);
+    processTimer->setInterval(7000);
+
+    state = DiagramAgentState::Stopped;
+}
+
+void Firefighters::pauseAgents()
+{
+    oldProcessState = processTimer->isActive();
+    processTimer->stop();
+}
+
+void Firefighters::continueAgents()
+{
+    if (oldProcessState)
+        processTimer->start();
+}
+
+void Firefighters::onStartProcessEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::ProcessStartEvent, "Тушим пожар...");
+    state = DiagramAgentState::Working;
+
+    connect(processTimer, &QTimer::timeout, this, &Firefighters::onEndProcessEvent);
+    processTimer->start();
+}
+
+void Firefighters::onEndProcessEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::FireOutEvent, "Пожар потушен");
+    processTimer->stop();
 }

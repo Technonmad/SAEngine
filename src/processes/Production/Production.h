@@ -23,22 +23,36 @@ private:
     void removeArrow(Arrow *arrow) override;
     void removeArrows() override;
 
+public:
+    void wakeUp() override;
+    void pauseAgents() override;
+    void continueAgents() override;
+
 signals:
-    void sendMessage(DiagramEventType event, const QString &message);
+//    void sendMessage(DiagramEventType event, const QString &message);
     void fireEvent();
     void brakeEvent();
-    void okEvent();
+    void startProcessEvent();
+    void continueProcessEvent();
+    void endProcessEvent();
 
 public slots:
     void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
-    void wakeUp() override;
     void startEvents();
     void onFireEvent();
     void onBrakeEvent();
-    void onOkEvent();
+    void onStartProcessEvent();
+    void onEndProcessEvent();
+    void onContinueProcessEvent();
 
 private:
-    QTimer *timer;
+    QTimer *eventTimer;
+    QTimer *processTimer;
+    bool oldProcessState;
+    bool oldEventState;
+
+public:
+    DiagramAgentState state;
 };
 
 #endif // PRODUCTION_H

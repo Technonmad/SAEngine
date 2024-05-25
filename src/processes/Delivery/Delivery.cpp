@@ -2,13 +2,20 @@
 #include "qgraphicsscene.h"
 
 #include <QDateTime>
+#include <QRandomGenerator>
+#include <QTimer>
 
 Delivery::Delivery(QMenu *contextMenu, QGraphicsItem *parent)
-    : GraphicsItem(GraphicsItem::Warehouse, contextMenu, parent)
+    : GraphicsItem(GraphicsItem::Delivery, contextMenu, parent)
 {
     QPixmap pixmap(":/images/processes/delivery.png");
     QPixmap scaledPixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::FastTransformation);
     m_pixmapItem = new QGraphicsPixmapItem(scaledPixmap);
+
+    connect(this, &Delivery::deliveryIsHere, this, &Delivery::onDeliveryIsHere);
+    connect(this, &Delivery::stopReceiving, this, &Delivery::onStopReceiving);
+    connect(this, &Delivery::continueReceiving, this, &Delivery::onContinueReceiving);
+    connect(this, &Delivery::goAway, this, &Delivery::onGoAway);
 }
 
 Delivery::~Delivery()
@@ -62,9 +69,97 @@ void Delivery::removeArrows()
     }
 }
 
-void Delivery::receiveMessage(const QString &message)
+void Delivery::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    qDebug() << message << "\n";
-//    QDateTime currentTime = QDateTime::currentDateTime();
-//    textEdit->append("[ " + currentTime.toString() + " ] " + message);
+    if (senderType == DiagramType::Warehouse && event == DiagramEventType::StartDeliveryEvent){
+        emit startProcessEvent();
+    } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::FireEvent){
+        emit stopReceiving();
+    } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::ContinueDeliveryEvent){
+        emit continueReceiving();
+    } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::EndDeliveryEvent){
+        emit goAway();
+    } else {
+        return;
+    }
+}
+
+void Delivery::wakeUp()
+{
+    emit sendMessage(diagramType(), DiagramEventType::StartEvent, "Начинаю работу");
+    eventTimer = new QTimer(this);
+    eventTimer->setInterval(12000);
+    connect(eventTimer, &QTimer::timeout, this, &Delivery::startEvents);
+    eventTimer->start();
+
+    processTimer = new QTimer(this);
+    processTimer->setInterval(5000);
+    connect(processTimer, &QTimer::timeout, this, &Delivery::onReceiveGoodsEndEvent);
+
+    state = DiagramAgentState::Stopped;
+}
+
+void Delivery::pauseAgents()
+{
+    oldProcessState = processTimer->isActive();
+    oldEventState = eventTimer->isActive();
+    processTimer->stop();
+    eventTimer->stop();
+}
+
+void Delivery::continueAgents()
+{
+    if (oldProcessState)
+        processTimer->start();
+
+    if (oldEventState)
+        eventTimer->start();
+}
+
+void Delivery::onStartProcessEvent()
+{
+    processTimer->start();
+    emit sendMessage(diagramType(), DiagramEventType::ProcessStartEvent, "Идет загрузка товара...");
+}
+
+void Delivery::onReceiveGoodsEndEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::DeliveryIsOutEvent, "Товар загружен и доставляется");
+}
+
+void Delivery::startEvents()
+{
+    int eventNumber = QRandomGenerator::global()->bounded(5) + 1;
+    switch (eventNumber) {
+    case 1:
+        emit deliveryIsHere();
+    default:
+        break;
+    }
+}
+
+void Delivery::onStopReceiving()
+{
+    state = DiagramAgentState::Stopped;
+    processTimer->stop();
+    emit sendMessage(diagramType(), DiagramEventType::DeliveryIsWaiting, "Погрузка приостановлена...");
+}
+
+void Delivery::onContinueReceiving()
+{
+    state = DiagramAgentState::Working;
+    processTimer->start();
+    emit sendMessage(diagramType(), DiagramEventType::ContinueDeliveryEvent, "Погрузка продолжается...");
+}
+
+void Delivery::onDeliveryIsHere()
+{
+    emit sendMessage(diagramType(), DiagramEventType::DeliveryIsHereEvent, "Приехала машина...");
+    eventTimer->stop();
+}
+
+void Delivery::onGoAway()
+{
+    emit sendMessage(diagramType(), DiagramEventType::DeliveryIsOutEvent, "Машина уехала");
+    eventTimer->stop();
 }

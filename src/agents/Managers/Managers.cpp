@@ -2,13 +2,16 @@
 #include "qgraphicsscene.h"
 
 #include <QDateTime>
+#include <QTimer>
 
 Managers::Managers(QMenu *contextMenu, QGraphicsItem *parent)
-    : GraphicsItem(GraphicsItem::Warehouse, contextMenu, parent)
+    : GraphicsItem(GraphicsItem::Managers, contextMenu, parent)
 {
     QPixmap pixmap(":/images/agents/managers.png");
     QPixmap scaledPixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::FastTransformation);
     m_pixmapItem = new QGraphicsPixmapItem(scaledPixmap);
+
+    connect(this, &Managers::startProcessEvent, this, &Managers::onStartProcessEvent);
 }
 
 Managers::~Managers()
@@ -62,9 +65,47 @@ void Managers::removeArrows()
     }
 }
 
-void Managers::receiveMessage(const QString &message)
+void Managers::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    qDebug() << message << "\n";
-//    QDateTime currentTime = QDateTime::currentDateTime();
-//    textEdit->append("[ " + currentTime.toString() + " ] " + message);
+    if (senderType == DiagramType::Delivery && event == DiagramEventType::DeliveryIsHereEvent){
+        emit startProcessEvent();
+    } else {
+        return;
+    }
+}
+
+void Managers::wakeUp()
+{
+    emit sendMessage(diagramType(), DiagramEventType::StartEvent, "Начинаю работу");
+    processTimer = new QTimer(this);
+    processTimer->setInterval(3000);
+
+    state = DiagramAgentState::Stopped;
+}
+
+void Managers::pauseAgents()
+{
+    oldProcessState = processTimer->isActive();
+    processTimer->stop();
+}
+
+void Managers::continueAgents()
+{
+    if (oldProcessState)
+        processTimer->start();
+}
+
+void Managers::onStartProcessEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::ProcessStartEvent, "Разговариваем с доставкой...");
+    state = DiagramAgentState::Working;
+
+    connect(processTimer, &QTimer::timeout, this, &Managers::onEndProcessEvent);
+    processTimer->start();
+}
+
+void Managers::onEndProcessEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::ProcessEndEvent, "Договорились с доставкой");
+    processTimer->stop();
 }

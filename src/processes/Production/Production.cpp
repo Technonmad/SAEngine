@@ -6,7 +6,7 @@
 #include <QRandomGenerator>
 
 Production::Production(QMenu *contextMenu, QGraphicsItem *parent)
-    : GraphicsItem(GraphicsItem::Warehouse, contextMenu, parent)
+    : GraphicsItem(GraphicsItem::ProductionLine, contextMenu, parent)
 {
     QPixmap pixmap(":/images/processes/production.png");
     QPixmap scaledPixmap = pixmap.scaled(150, 150, Qt::KeepAspectRatio, Qt::FastTransformation);
@@ -14,7 +14,9 @@ Production::Production(QMenu *contextMenu, QGraphicsItem *parent)
 
     connect(this, &Production::brakeEvent, this, &Production::onBrakeEvent);
     connect(this, &Production::fireEvent, this, &Production::onFireEvent);
-    connect(this, &Production::okEvent, this, &Production::onOkEvent);
+    connect(this, &Production::startProcessEvent, this, &Production::onStartProcessEvent);
+    connect(this, &Production::endProcessEvent, this, &Production::onEndProcessEvent);
+    connect(this, &Production::continueProcessEvent, this, &Production::onContinueProcessEvent);
 }
 
 Production::~Production()
@@ -71,9 +73,9 @@ void Production::removeArrows()
 void Production::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
     if (senderType == DiagramType::Firefighters && event == DiagramEventType::FireOutEvent){
-        emit okEvent();
+        emit continueProcessEvent();
     } else if (senderType == DiagramType::Tecnician && event == DiagramEventType::RepairEvent){
-        emit okEvent();
+        emit continueProcessEvent();
     } else {
         return;
     }
@@ -81,26 +83,46 @@ void Production::receiveMessage(DiagramType senderType, DiagramEventType event, 
 
 void Production::wakeUp()
 {
-    timer = new QTimer(this);
-    timer->setInterval(5000);
-    connect(timer, &QTimer::timeout, this, &Production::startEvents);
-    timer->start();
+    emit sendMessage(diagramType(), DiagramEventType::StartEvent, "Начинаю работу");
+    eventTimer = new QTimer(this);
+    eventTimer->setInterval(5000);
+    connect(eventTimer, &QTimer::timeout, this, &Production::startEvents);
+
+    processTimer = new QTimer(this);
+    processTimer->setInterval(10000);
+    connect(processTimer, &QTimer::timeout, this, &Production::onEndProcessEvent);
+    eventTimer->start();
+
+    state = DiagramAgentState::Working;
+    emit startProcessEvent();
+}
+
+void Production::pauseAgents()
+{
+    oldProcessState = processTimer->isActive();
+    oldEventState = eventTimer->isActive();
+    processTimer->stop();
+    eventTimer->stop();
+}
+
+void Production::continueAgents()
+{
+    if (oldProcessState)
+        processTimer->start();
+
+    if (oldEventState)
+        eventTimer->start();
 }
 
 void Production::startEvents()
 {
-    int eventNumber = QRandomGenerator::global()->bounded(3) + 1;
+    int eventNumber = QRandomGenerator::global()->bounded(9) + 1;
     switch (eventNumber) {
     case 1:
         emit brakeEvent();
-        timer->stop();
-        break;
-    case 2:
-        emit okEvent();
         break;
     case 3:
         emit fireEvent();
-        timer->stop();
         break;
     default:
         break;
@@ -109,16 +131,36 @@ void Production::startEvents()
 
 void Production::onFireEvent()
 {
-    emit sendMessage(DiagramEventType::FireEvent, "У меня пожар!");
+    eventTimer->stop();
+    processTimer->stop();
+    state = DiagramAgentState::Stopped;
+    emit sendMessage(diagramType(), DiagramEventType::FireEvent, "У меня пожар!");
 }
 
 void Production::onBrakeEvent()
 {
-    emit sendMessage(DiagramEventType::BrakeEvent, "Я сломан");
+    eventTimer->stop();
+    processTimer->stop();
+    state = DiagramAgentState::Stopped;
+    emit sendMessage(diagramType(), DiagramEventType::BrakeEvent, "Я сломан");
 }
 
-void Production::onOkEvent()
+void Production::onStartProcessEvent()
 {
-    emit sendMessage(DiagramEventType::OkEvent, "Произвожу товар");
-    timer->start();
+    emit sendMessage(diagramType(), DiagramEventType::ProcessStartEvent, "Произвожу товар...");
+    eventTimer->start();
+    processTimer->start();
+}
+
+void Production::onEndProcessEvent()
+{
+    emit sendMessage(diagramType(), DiagramEventType::ProcessEndEvent, "Товар произведен. Отправляю на склад...");
+}
+
+void Production::onContinueProcessEvent()
+{
+    eventTimer->start();
+    processTimer->start();
+    state = DiagramAgentState::Working;
+    emit sendMessage(diagramType(), DiagramEventType::ProcessContinueEvent, "Продолжаю производство...");
 }
