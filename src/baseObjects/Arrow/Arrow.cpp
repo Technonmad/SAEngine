@@ -96,12 +96,12 @@ void Arrow::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     }
 }
 
-void Arrow::handleMessageFromEndObject(const QString &message)
+void Arrow::handleMessageFromStartObject(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event, const QString &message)
 {
-    emit sendMessageToStartObject(message);
+    emit sendMessageToEndObject(type, event, message);
 }
 
-void Arrow::handleMessageFromStartObject(const QString &message)
+void Arrow::handleMessageFromEndObject(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event, const QString &message)
 {
-    emit sendMessageToEndObject(message);
+    emit sendMessageToStartObject(type, event, message);
 }
