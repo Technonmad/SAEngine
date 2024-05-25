@@ -31,17 +31,12 @@ target_link_libraries(
 )
 
 set(saengine_resource_files
-	  "../../images/agents/cam.png"
-		"../../images/agents/engineers.png"
-		"../../images/agents/accessControl.png"
 		"../../images/agents/firefighter.png"
 		"../../images/agents/fireSensor.png"
-		"../../images/agents/security.png"
 		"../../images/agents/managers.png"
 		"../../images/agents/tecnician.png"
 		"../../images/processes/warehouse.png"
 		"../../images/processes/production.png"
-		"../../images/processes/packaging.png"
 		"../../images/processes/delivery.png"
 		"../../images/backgrounds/background1.png"
 		"../../images/backgrounds/background2.png"
@@ -52,6 +47,10 @@ set(saengine_resource_files
 		"../../images/toolbar/remove.png"
 		"../../images/toolbar/toBack.png"
 		"../../images/toolbar/toFront.png"
+		"../../images/toolbar/start.png"
+		"../../images/toolbar/stop.png"
+		"../../images/toolbar/pause.png"
+		"../../images/toolbar/continue.png"
 )
 
 qt_add_resources(SAEngine "SAEngine"

@@ -8,9 +8,10 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
 {
     myItemMenu = itemMenu;
     myMode = MoveItem;
-    myItemType = GraphicsItem::Manager;
+    myItemType = GraphicsItem::Warehouse;
     line = nullptr;
-    myLineColor = Qt::black;
+    myLineColor = Qt::red;
+
 }
 
 QColor DiagramScene::lineColor() const
@@ -33,9 +34,46 @@ void DiagramScene::setMode(Mode mode)
     myMode = mode;
 }
 
-void DiagramScene::setItemType(GraphicsItem::DiagramType type/*Item::DiagramType type*/)
+void DiagramScene::setItemType(GraphicsItem::DiagramType type)
 {
     myItemType = type;
+}
+
+void DiagramScene::itemMessageHandle(GraphicsItem::DiagramType type, GraphicsItem::DiagramEventType event,
+                                     const QString &message)
+{
+    QString typeName = QVariant::fromValue(type).value<QString>();
+    emit messageSent(typeName + " : " + message);
+}
+
+void DiagramScene::startAgents()
+{
+    foreach (QGraphicsItem* item, this->items()) {
+        GraphicsItem* graphicsItem = qgraphicsitem_cast<GraphicsItem*>(item);
+        if (graphicsItem != nullptr) {
+            graphicsItem->wakeUp();
+        }
+    }
+}
+
+void DiagramScene::pauseAgents()
+{
+    foreach (QGraphicsItem* item, this->items()) {
+        GraphicsItem* graphicsItem = qgraphicsitem_cast<GraphicsItem*>(item);
+        if (graphicsItem != nullptr) {
+            graphicsItem->pauseAgents();
+        }
+    }
+}
+
+void DiagramScene::continueAgents()
+{
+    foreach (QGraphicsItem* item, this->items()) {
+        GraphicsItem* graphicsItem = qgraphicsitem_cast<GraphicsItem*>(item);
+        if (graphicsItem != nullptr) {
+            graphicsItem->continueAgents();
+        }
+    }
 }
 
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
@@ -43,14 +81,12 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (mouseEvent->button() != Qt::LeftButton)
         return;
 
-//    Item *item;
-    GraphicsItem *item;
     switch (myMode) {
         case InsertItem:
-//            item = new Item(myItemType, myItemMenu);
             item = itemFactory.get()->create(myItemType, myItemMenu);
             addItem(item);
             item->setPos(mouseEvent->scenePos());
+            QObject::connect(item, &GraphicsItem::sendMessage, this, &DiagramScene::itemMessageHandle);
             emit itemInserted(item);
             break;
         case InsertLine:
@@ -103,7 +139,8 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             arrow->setZValue(-1000.0);
             addItem(arrow);
             arrow->updatePosition();
-            emit startItem->sendMessage("Я работаю!");
+//            QString typeName = QVariant::fromValue(myItemType).value<QString>();
+//            emit startItem->sendMessage(typeName + " : Я работаю!");
         }
     }
     line = nullptr;
