@@ -28,9 +28,9 @@ public:
     MainWindow();
 
 signals:
-    void startModel();
-    void stopModel();
     void startAgents();
+    void continueModel();
+    void pauseModel();
 
 private slots:
     void backgroundButtonGroupClicked(QAbstractButton *button);
@@ -46,8 +46,8 @@ private slots:
     void lineButtonTriggered();
     void startButtonTriggered();
     void stopButtonTriggered();
-    void startModelTriggered();
-    void stopModelTriggered();
+    void pauseButtonTriggered();
+    void continueButtonTriggered();
     void messageFromItem(const QString &message);
 //    void itemSelected(QGraphicsItem *item);
     void about();
@@ -76,6 +76,8 @@ private:
     QAction *deleteAction;
     QAction *startAction;
     QAction *stopAction;
+    QAction *pauseAction;
+    QAction *continueAction;
 
     QAction *toFrontAction;
     QAction *sendBackAction;

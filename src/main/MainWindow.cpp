@@ -17,6 +17,8 @@ MainWindow::MainWindow()
     connect(scene, &DiagramScene::messageSent,
             this, &MainWindow::messageFromItem);
     connect(this, &MainWindow::startAgents, scene, &DiagramScene::startAgents);
+    connect(this, &MainWindow::pauseModel, scene, &DiagramScene::pauseAgents);
+    connect(this, &MainWindow::continueModel, scene, &DiagramScene::continueAgents);
     createToolBars();
 
     QHBoxLayout *layout = new QHBoxLayout;
@@ -173,6 +175,10 @@ void MainWindow::lineButtonTriggered()
 
 void MainWindow::startButtonTriggered()
 {
+    textEdit->append("\n");
+    textEdit->append("*****************");
+    textEdit->append("\n");
+
     editToolBar->setDisabled(true);
     colorToolBar->setDisabled(true);
     pointerToolBar->setDisabled(true);
@@ -183,12 +189,7 @@ void MainWindow::startButtonTriggered()
     aboutMenu->setDisabled(true);
     view->setDisabled(true);
     stopAction->setDisabled(false);
-
-    timer = new QTimer(this);
-    timer->setInterval(10000);
-    connect(timer, &QTimer::timeout, this,
-            &MainWindow::startModelTriggered);
-    timer->start();
+    pauseAction->setDisabled(false);
 
     emit startAgents();
 }
@@ -204,20 +205,29 @@ void MainWindow::stopButtonTriggered()
     itemMenu->setDisabled(false);
     aboutMenu->setDisabled(false);
     view->setDisabled(false);
+    pauseAction->setDisabled(true);
     stopAction->setDisabled(true);
+    continueAction->setDisabled(true);
 
-    timer->stop();
+    emit pauseModel();
 }
 
-void MainWindow::startModelTriggered()
+void MainWindow::pauseButtonTriggered()
 {
-    int eventNumber = QRandomGenerator::global()->bounded(10) + 1;
-    qDebug() << "Число: " << eventNumber;
+    stopAction->setDisabled(false);
+    continueAction->setDisabled(false);
+    pauseAction->setDisabled(true);
+
+    emit pauseModel();
+
 }
 
-void MainWindow::stopModelTriggered()
+void MainWindow::continueButtonTriggered()
 {
+    pauseAction->setDisabled(false);
+    continueAction->setDisabled(true);
 
+    emit continueModel();
 }
 
 void MainWindow::messageFromItem(const QString &message)
@@ -239,14 +249,10 @@ void MainWindow::createToolBox()
     connect(buttonGroup, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
             this, &MainWindow::buttonGroupClicked);
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(createCellWidget(tr("AICamera"), GraphicsItem::AICamera, ":/images/agents/cam.png"), 0, 0);
-    layout->addWidget(createCellWidget(tr("Fire sensor"), GraphicsItem::FireSensor, ":/images/agents/fireSensor.png"), 0, 1);
-    layout->addWidget(createCellWidget(tr("Firefighters"), GraphicsItem::Firefighters, ":/images/agents/firefighter.png"), 1, 0);
-    layout->addWidget(createCellWidget(tr("Security"), GraphicsItem::SecurityPost, ":/images/agents/security.png"), 1, 1);
-    layout->addWidget(createCellWidget(tr("Access control"), GraphicsItem::AccessControl, ":/images/agents/accessControl.png"), 2, 0);
-    layout->addWidget(createCellWidget(tr("Engineers"), GraphicsItem::Engineers, ":/images/agents/engineers.png"), 2, 1);
-    layout->addWidget(createCellWidget(tr("Managers"), GraphicsItem::Managers, ":/images/agents/managers.png"), 3, 0);
-    layout->addWidget(createCellWidget(tr("Tecnician"), GraphicsItem::Tecnician, ":/images/agents/tecnician.png"), 3, 1);
+    layout->addWidget(createCellWidget(tr("Fire sensor"), GraphicsItem::FireSensor, ":/images/agents/fireSensor.png"), 0, 0);
+    layout->addWidget(createCellWidget(tr("Firefighters"), GraphicsItem::Firefighters, ":/images/agents/firefighter.png"), 0, 1);
+    layout->addWidget(createCellWidget(tr("Managers"), GraphicsItem::Managers, ":/images/agents/managers.png"), 1, 0);
+    layout->addWidget(createCellWidget(tr("Tecnician"), GraphicsItem::Tecnician, ":/images/agents/tecnician.png"), 1, 1);
 
     layout->setRowStretch(4, 10);
     layout->setColumnStretch(2, 10);
@@ -261,8 +267,7 @@ void MainWindow::createToolBox()
     QGridLayout *processLayout = new QGridLayout;
     processLayout->addWidget(createCellWidget(tr("Storing"), GraphicsItem::Warehouse, ":/images/processes/warehouse.png"), 0, 0);
     processLayout->addWidget(createCellWidget(tr("Production"), GraphicsItem::ProductionLine, ":/images/processes/production.png"), 0, 1);
-    processLayout->addWidget(createCellWidget(tr("Packaging"), GraphicsItem::PackingLine, ":/images/processes/packaging.png"), 1, 0);
-    processLayout->addWidget(createCellWidget(tr("Delivery"), GraphicsItem::Delivery, ":/images/processes/delivery.png"), 1, 1);
+    processLayout->addWidget(createCellWidget(tr("Delivery"), GraphicsItem::Delivery, ":/images/processes/delivery.png"), 1, 0);
 
     processLayout->setRowStretch(3, 10);
     processLayout->setColumnStretch(2, 10);
@@ -325,6 +330,18 @@ void MainWindow::createActions()
     stopAction->setDisabled(true);
     connect(stopAction, &QAction::triggered, this, &MainWindow::stopButtonTriggered);
     // TODO: сделать действие
+
+    pauseAction = new QAction(QIcon(":/images/toolbar/pause.png"),
+                              tr("&Pause"), this);
+    pauseAction->setStatusTip(tr("Pause model"));
+    pauseAction->setDisabled(true);
+    connect(pauseAction, &QAction::triggered, this, &MainWindow::pauseButtonTriggered);
+
+    continueAction = new QAction(QIcon(":/images/toolbar/continue.png"),
+                              tr("&Continue"), this);
+    continueAction->setStatusTip(tr("Continue model"));
+    continueAction->setDisabled(true);
+    connect(continueAction, &QAction::triggered, this, &MainWindow::continueButtonTriggered);
 
     exitAction = new QAction(tr("E&xit"), this);
     exitAction->setShortcuts(QKeySequence::Quit);
@@ -406,6 +423,8 @@ void MainWindow::createToolBars()
     startToolBar = addToolBar(tr("Start type"));
     startToolBar->addAction(startAction);
     startToolBar->addAction(stopAction);
+    startToolBar->addAction(pauseAction);
+    startToolBar->addAction(continueAction);
 }
 
 void MainWindow::createTextBox()
