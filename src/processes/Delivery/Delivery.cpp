@@ -13,9 +13,10 @@ Delivery::Delivery(QMenu *contextMenu, QGraphicsItem *parent)
     m_pixmapItem = new QGraphicsPixmapItem(scaledPixmap);
 
     connect(this, &Delivery::deliveryIsHere, this, &Delivery::onDeliveryIsHere);
+    connect(this, &Delivery::startProcessEvent, this, &Delivery::onStartProcessEvent);
     connect(this, &Delivery::stopReceiving, this, &Delivery::onStopReceiving);
     connect(this, &Delivery::continueReceiving, this, &Delivery::onContinueReceiving);
-    connect(this, &Delivery::goAway, this, &Delivery::onGoAway);
+    connect(this, &Delivery::goodsReceivedEvent, this, &Delivery::onGoodsReceivedEndEvent);
 }
 
 Delivery::~Delivery()
@@ -71,14 +72,16 @@ void Delivery::removeArrows()
 
 void Delivery::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    if (senderType == DiagramType::Warehouse && event == DiagramEventType::StartDeliveryEvent){
-        emit startProcessEvent();
-    } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::FireEvent){
-        emit stopReceiving();
-    } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::ContinueDeliveryEvent){
-        emit continueReceiving();
-    } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::EndDeliveryEvent){
-        emit goAway();
+    if (state == DiagramAgentState::Working){
+        if (senderType == DiagramType::Warehouse && event == DiagramEventType::StartDeliveryEvent){
+            emit startProcessEvent();
+        } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::FireEvent){
+            emit stopReceiving();
+        } else if (senderType == DiagramType::Warehouse && event == DiagramEventType::ContinueDeliveryEvent){
+            emit continueReceiving();
+        } else {
+            return;
+        }
     } else {
         return;
     }
@@ -94,7 +97,7 @@ void Delivery::wakeUp()
 
     processTimer = new QTimer(this);
     processTimer->setInterval(5000);
-    connect(processTimer, &QTimer::timeout, this, &Delivery::onReceiveGoodsEndEvent);
+    connect(processTimer, &QTimer::timeout, this, &Delivery::onGoodsReceivedEndEvent);
 
     state = DiagramAgentState::Stopped;
 }
@@ -120,11 +123,14 @@ void Delivery::onStartProcessEvent()
 {
     processTimer->start();
     emit sendMessage(diagramType(), DiagramEventType::ProcessStartEvent, "Идет загрузка товара...");
+    state = DiagramAgentState::Working;
 }
 
-void Delivery::onReceiveGoodsEndEvent()
+void Delivery::onGoodsReceivedEndEvent()
 {
     emit sendMessage(diagramType(), DiagramEventType::DeliveryIsOutEvent, "Товар загружен и доставляется");
+    processTimer->stop();
+    state = DiagramAgentState::Stopped;
 }
 
 void Delivery::startEvents()
@@ -156,10 +162,5 @@ void Delivery::onDeliveryIsHere()
 {
     emit sendMessage(diagramType(), DiagramEventType::DeliveryIsHereEvent, "Приехала машина...");
     eventTimer->stop();
-}
-
-void Delivery::onGoAway()
-{
-    emit sendMessage(diagramType(), DiagramEventType::DeliveryIsOutEvent, "Машина уехала");
-    eventTimer->stop();
+    state = DiagramAgentState::Working;
 }
