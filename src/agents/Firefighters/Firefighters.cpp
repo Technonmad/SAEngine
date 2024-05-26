@@ -67,7 +67,7 @@ void Firefighters::removeArrows()
 
 void Firefighters::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    if (event == DiagramEventType::FireOutEvent){
+    if (senderType == DiagramType::FireSensor && event == DiagramEventType::FireEvent){
         emit startProcessEvent();
     } else {
         return;

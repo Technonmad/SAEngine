@@ -29,22 +29,20 @@ public:
     void continueAgents() override;
 
 signals:
-    void receiveGoodsEvent();
+    void goodsReceivedEvent();
     void deliveryIsHere();
     void stopReceiving();
     void continueReceiving();
     void startProcessEvent();
-    void goAway();
 
 public slots:
     void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
     void onStartProcessEvent();
-    void onReceiveGoodsEndEvent();
+    void onGoodsReceivedEndEvent();
     void startEvents();
     void onStopReceiving();
     void onContinueReceiving();
     void onDeliveryIsHere();
-    void onGoAway();
 
 private:
     QTimer *eventTimer;

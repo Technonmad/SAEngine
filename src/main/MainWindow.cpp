@@ -175,9 +175,7 @@ void MainWindow::lineButtonTriggered()
 
 void MainWindow::startButtonTriggered()
 {
-    textEdit->append("\n");
     textEdit->append("*****************");
-    textEdit->append("\n");
 
     editToolBar->setDisabled(true);
     colorToolBar->setDisabled(true);
