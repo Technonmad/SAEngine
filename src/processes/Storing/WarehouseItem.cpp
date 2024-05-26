@@ -17,8 +17,8 @@ WarehouseItem::WarehouseItem(QMenu *contextMenu, QGraphicsItem *parent)
     connect(this, &WarehouseItem::endProcessEvent, this, &WarehouseItem::onEndProcessEvent);
     connect(this, &WarehouseItem::continueProcessEvent, this, &WarehouseItem::onContinueProcessEvent);
     connect(this, &WarehouseItem::startDeliveringEvent, this, &WarehouseItem::onStartDeliveringEvent);
-    connect(this, &WarehouseItem::continueDeliveringEvent, this, &WarehouseItem::onContinueDeliveringEvent);
-    connect(this, &WarehouseItem::endDeliveringEvent, this, &WarehouseItem::onEndDeliveringEvent);
+//    connect(this, &WarehouseItem::continueDeliveringEvent, this, &WarehouseItem::onContinueDeliveringEvent);
+//    connect(this, &WarehouseItem::endDeliveringEvent, this, &WarehouseItem::onEndDeliveringEvent);
 }
 
 WarehouseItem::~WarehouseItem()
@@ -74,20 +74,20 @@ void WarehouseItem::removeArrows()
 
 void WarehouseItem::receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message)
 {
-    if (state != DiagramAgentState::Stopped){
+//    if (state != DiagramAgentState::Stopped){
         if (senderType == DiagramType::ProductionLine && event == DiagramEventType::ProcessEndEvent){
             emit startProcessEvent();
         } else if (senderType == DiagramType::Managers && event == DiagramEventType::ProcessEndEvent){
             emit startDeliveringEvent();
         } else if (senderType == DiagramType::Firefighters && event == DiagramEventType::FireOutEvent){
-            if (state == DiagramAgentState::Working)
+            if (old_state == DiagramAgentState::Working)
                 emit continueProcessEvent();
-            else if (state == DiagramAgentState::SendingToDeliver)
-                emit continueDeliveringEvent();
+//            else if (old_state == DiagramAgentState::SendingToDeliver)
+//                emit continueDeliveringEvent();
         } else {
             return;
         }
-    }
+//    }
 }
 
 void WarehouseItem::wakeUp()
@@ -102,9 +102,9 @@ void WarehouseItem::wakeUp()
     connect(eventTimer, &QTimer::timeout, this, &WarehouseItem::startEvents);
     eventTimer->start();
 
-    processTimer = new QTimer(this);
-    processTimer->setInterval(5000);
-    connect(processTimer, &QTimer::timeout, this, &WarehouseItem::onEndDeliveringEvent);
+//    deliveryTimer = new QTimer(this);
+//    deliveryTimer->setInterval(5000);
+//    connect(deliveryTimer, &QTimer::timeout, this, &WarehouseItem::onEndDeliveringEvent);
 
     state = DiagramAgentState::Working;
 }
@@ -142,6 +142,7 @@ void WarehouseItem::onFireEvent()
 {
     eventTimer->stop();
     processTimer->stop();
+    old_state = state;
     state = DiagramAgentState::Stopped;
     emit sendMessage(diagramType(), DiagramEventType::FireEvent, "У меня пожар!");
 }
@@ -150,6 +151,7 @@ void WarehouseItem::onStartProcessEvent()
 {
     emit sendMessage(diagramType(), DiagramEventType::ProcessStartEvent, "Раскладываю товар...");
     eventTimer->start();
+    old_state = state;
     state = DiagramAgentState::Working;
 
     processTimer->start();
@@ -157,38 +159,45 @@ void WarehouseItem::onStartProcessEvent()
 
 void WarehouseItem::onEndProcessEvent()
 {
+    old_state = state;
     state = DiagramAgentState::Working;
     emit sendMessage(diagramType(), DiagramEventType::ProcessEndEvent, "Товар разложен");
+    processTimer->stop();
 }
 
 void WarehouseItem::onContinueProcessEvent()
 {
     eventTimer->start();
     processTimer->start();
+    old_state = state;
     state = DiagramAgentState::Working;
     emit sendMessage(diagramType(), DiagramEventType::ProcessEndEvent, "Продолжаю раскладывать товар...");
 }
 
 void WarehouseItem::onStartDeliveringEvent()
 {
-    emit sendMessage(diagramType(), DiagramEventType::StartDeliveryEvent, "Отправляю товар в доставку...");
+    emit sendMessage(diagramType(), DiagramEventType::StartDeliveryEvent, "Можно забирать товар");
     eventTimer->start();
+    old_state = state;
     state = DiagramAgentState::Working;
 
-    processTimer->start();
+//    processTimer->start();
 }
 
 void WarehouseItem::onContinueDeliveringEvent()
 {
     eventTimer->start();
-    processTimer->start();
+//    deliveryTimer->start();
+    old_state = state;
     state = DiagramAgentState::Working;
-    emit sendMessage(diagramType(), DiagramEventType::ContinueDeliveryEvent, "Продолжаю раскладывать товар...");
+    emit sendMessage(diagramType(), DiagramEventType::ContinueDeliveryEvent, "Можно продолжать погрузку...");
 }
 
-void WarehouseItem::onEndDeliveringEvent()
-{
-    state = DiagramAgentState::Working;
-    emit sendMessage(diagramType(), DiagramEventType::EndDeliveryEvent, "Товар отправлен в доставку");
-}
+//void WarehouseItem::onEndDeliveringEvent()
+//{
+//    old_state = state;
+//    state = DiagramAgentState::Working;
+//    emit sendMessage(diagramType(), DiagramEventType::EndDeliveryEvent, "Товар отправлен в доставку");
+//    deliveryTimer->stop();
+//}
 

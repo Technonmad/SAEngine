@@ -36,7 +36,7 @@ signals:
     void endProcessEvent();
     void startDeliveringEvent();
     void continueDeliveringEvent();
-    void endDeliveringEvent();
+//    void endDeliveringEvent();
 
 public slots:
     void receiveMessage(DiagramType senderType, DiagramEventType event, const QString &message) override;
@@ -47,13 +47,15 @@ public slots:
     void onContinueProcessEvent();
     void onStartDeliveringEvent();
     void onContinueDeliveringEvent();
-    void onEndDeliveringEvent();
+//    void onEndDeliveringEvent();
 
 private:
     QTimer *eventTimer;
     QTimer *processTimer;
+    QTimer *deliveryTimer;
     bool oldProcessState;
     bool oldEventState;
+    DiagramAgentState old_state;
 
 public:
     DiagramAgentState state;
